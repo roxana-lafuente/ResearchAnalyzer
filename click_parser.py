@@ -3,7 +3,7 @@
 
 ##############################################################################
 #
-# ResearchLogger: Python Keylogger scientific purposes in Linux and Windows
+# ResearchAnalyzer: Data Analyzer for ResearchLogger
 # Copyright (C) 2015  Roxana Lafuente <roxana.lafuente@gmail.com>
 #
 # This program is free software; you can redistribute it and/or
