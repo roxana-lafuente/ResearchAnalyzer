@@ -1,7 +1,7 @@
 # ResearchAnalyzer
-API con métodos que facilitan el análisis de los logs obtenidos con ResearchLogger. Esta herrramienta usa estadística descriptiva para generar informes sobre:
+Python API to analyze data collected with ResearchLogger. This tool makes use of descriptive statistics to generate reports on:
 
-- Clicks
+- Clickstrokes
 - Keystrokes
-- Pausas en la sesión
-- Fases en la traducción (para sesiones de traducción)
+- Pauses in the session
+- Translation phases (for translatology studies)
