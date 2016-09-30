@@ -1,7 +1,10 @@
 # ResearchAnalyzer
-Python API to analyze data collected with ResearchLogger. This tool makes use of descriptive statistics to generate reports on:
+Open-source python API under GNU license for automation of ResearchLoggers' logs analysis. It offers reports on:
 
-- Clickstrokes
+- Clicks
 - Keystrokes
-- Pauses in the session
-- Translation phases (for translatology studies)
+- Pauses
+- Translation phases (provided that some preconditions are fulfilled)
+
+## How to use
+An example can be found in main.py
