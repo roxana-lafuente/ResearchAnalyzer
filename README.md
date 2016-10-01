@@ -10,9 +10,10 @@ Open-source python API under GNU license for automation of ResearchLoggers' logs
 
 ### Methods
 The LogInfo object provides information on the data by using descriptive statistics. It must be instantiated by providing:
-1. A clicks log.
-2. A keystroke log.
-3. A system log.
+
+- A clicks log.
+- A keystroke log.
+- A system log.
 
 #### Clicks
 - **get_unique_pressed_clicks()**: Returns a set with all unique types of clicks used during the logging session.
@@ -25,12 +26,12 @@ The LogInfo object provides information on the data by using descriptive statist
 (button type, [down times], up time, press duration, [down x], [down y], up x, 'up y)
 ````
 - **print_click_summary()**: It displays a summary of the click data:
-1. Total amount of clicks.
-2. Windows in which clicks are pressed.
-3. Types of clicks used.
-4. Mean click press time.
-5. Click press time variance.
-6. Click press time standard deviation.
+     - Total amount of clicks.
+     - Windows in which clicks are pressed.
+     - Types of clicks used.
+     - Mean click press time.
+     - Click press time variance.
+     - Click press time standard deviation.
 
 
 #### Keystrokes
@@ -44,16 +45,38 @@ The LogInfo object provides information on the data by using descriptive statist
 (key type, [down times], up time, press time, [down x], [down y], up x, up y)
 ````
 -  **print_key_summary()**: It displays a summary of the keystroke data:
-1. Total amount of pressed keys.
-2. Unique pressed keys.
-3. Windows in which keys are pressed.
-4. Mean key press time.
-5. Key press time variance.
-6. Key press time standard deviation.
-7. Unique function keys used.
-8. Unique erase keys used.
-9. Unique movement keys used.
-10. Unique key combos used.
+     - Total amount of pressed keys.
+     - Unique pressed keys.
+     - Windows in which keys are pressed.
+     - Mean key press time.
+     - Key press time variance.
+     - Key press time standard deviation.
+     - Unique function keys used.
+     - Unique erase keys used.
+     - Unique movement keys used.
+     - Unique key combos used.
+
+#### Phases
+- **get_orientation_info()**: Returns a tuple with the format (start time, start end).
+- **get_drafting_info()**: Returns a tuple with the format (start time, start end).
+- **get_orientation_info()**: Returns a tuple with the format (start time, start end).
+- **get_total_session_time()**: Returns an integer with the total session time.
+- **print_phases_summary()**: Prints a summary of the phases (orientation, drafting, revision and the whole session).
+     - Start and end time.
+     - Phase duration.
+     - Percentage of the session dedicated to the phase.
+
+#### Pauses
+- **print_pauses()**: Prints an enumeration of all the pauses in the session, including the start and end of each one.
+- **print_pause_summary()**: Prints a summary of the pauses. It includes:
+     - Total amount of pauses in the session.
+     - Amount of:
+         - Short pauses.
+         - Medium pauses.
+         - Large pauses.
+         - Non significant pauses.
+     - Mean pause time.
+     - Pause time variance.
 
 ### Example
 An example can be found in main.py. Note: You need to collect your own data to use the example.
