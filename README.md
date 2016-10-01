@@ -9,7 +9,10 @@ Open-source python API under GNU license for automation of ResearchLoggers' logs
 ## How to use
 
 ### Methods
-The LogInfo object provides information on the data by using descriptive statistics. It must be instantiated by providing: (a) A clicks log (b) A keystroke log (c) A system log.
+The LogInfo object provides information on the data by using descriptive statistics. It must be instantiated by providing:
+A. A clicks log.
+B. A keystroke log.
+C. A system log.
 
 #### Clicks
 - **get_unique_pressed_clicks()**: Returns a set with all unique types of clicks used during the logging session.
@@ -21,7 +24,13 @@ The LogInfo object provides information on the data by using descriptive statist
 ````
 (button type, [down times], up time, press duration, [down x], [down y], up x, 'up y)
 ````
-- **print_click_summary()**: It displays a summary of the click data: (a) Total amount of clicks (b) Windows in which clicks are pressed (c) Types of clicks used (d) Mean click press time (e) Click press time variance (f) Click press time standard deviation.
+- **print_click_summary()**: It displays a summary of the click data:
+A. Total amount of clicks.
+B. Windows in which clicks are pressed.
+C. Types of clicks used.
+D. Mean click press time.
+E. Click press time variance.
+F. Click press time standard deviation.
 
 
 #### Keystrokes
@@ -34,7 +43,17 @@ The LogInfo object provides information on the data by using descriptive statist
 ````
 (key type, [down times], up time, press time, [down x], [down y], up x, up y)
 ````
--  **print_key_summary()**: It displays a summary of the keystroke data: (a) Total amount of pressed keys (b) Unique pressed keys (c) Windows in which keys are pressed (d) Mean key press time (e) Key press time variance (f) Key press time standard deviation. (g) Unique function keys used (h) Unique erase keys used (g) Unique movement keys used (h) Unique key combos used.
+-  **print_key_summary()**: It displays a summary of the keystroke data:
+A. Total amount of pressed keys.
+B. Unique pressed keys.
+C. Windows in which keys are pressed.
+D. Mean key press time.
+E. Key press time variance.
+F. Key press time standard deviation.
+G. Unique function keys used.
+H. Unique erase keys used.
+I. Unique movement keys used.
+J. Unique key combos used.
 
 ### Example
 An example can be found in main.py. Note: You need to collect your own data to use the example.
