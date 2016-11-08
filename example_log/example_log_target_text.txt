@@ -1,0 +1,4 @@
+Start time: 2016-11-08 19:55:42
+End time: 2016-11-08 19:57:33
+Final document:
+Hello, this is an example log so that you can see how ResearchLogger and ResearchAnalyzer are used. In this example, we will translate a text from Spanish to English in order to generate a log with ResearchLogger. Then we will analyze it with the help of ResearchAnalyzer.

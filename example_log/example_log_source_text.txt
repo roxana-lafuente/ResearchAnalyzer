@@ -1,0 +1,1 @@
+Hola, este es un log de ejemplo para que puedas ver como se usan ResearchLogger y ResearchAnalyzer. En este ejemplo, traduciremos un texto de Español a Inglés para generar un log con ResearchLogger que luego analizaremos con ayuda de ResearchAnalyzer.

@@ -79,4 +79,12 @@ The LogInfo object provides information on the data by using descriptive statist
      - Pause time variance.
 
 ### Example
-An example can be found in main.py. Note: You need to collect your own data to use the example.
+An usage example of ResearchAnalyzer can be found in main.py; it uses the ResearchLogger's example log files on the "example_log" folder.
+
+The keystrokes summary looks like:
+![Keystrokes summary](/images/keys_summary.png)
+
+The clicks summary looks like:
+![Clicks summary](/images/clicks_summary.png)
+
+**Note**: You need to collect your own data with ResearchLogger to analyze your own datasets.

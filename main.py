@@ -28,16 +28,15 @@ path = os.getcwd()
 # LogInfo needs: - Detailed log file path.
 #                - Click images file path.
 #                - System log file path.
-li = LogInfo(path + "YOUR_CLICK_DATA_HERE",
-             path + "YOUR_KEYSTROKE_DATA_HERE",
-             path + "YOUR_SYSTEM_LOG_DATA_HERE")
+li = LogInfo(path + "/example_log/click_images/clickimagelogfile_zxysp.txt", # Your click data file here
+             path + "/example_log/detailed_log/detailedlogfile_zxysp.txt", # Your detailed log file here
+             path + "/example_log/system_log/system_log_zxysp.txt") # Your system log data here
 # Print clicks summary info.
 print "Unique pressed clicks:", li.get_unique_pressed_clicks()
 print
 print "In-order pressed clicks:", li.get_all_pressed_clicks()
 print
 print li.get_click_info()
-print path + "YOUR_CLICK_DATA_HERE"
 li.print_click_summary()
 
 # Print keys summary info.
@@ -50,11 +49,3 @@ for f in li.get_all_pressed_keys():
 for f in li.get_letter_info():
     print f
 li.print_key_summary()
-# Phases
-print li.get_orientation_info()
-print li.get_drafting_info()
-print li.get_orientation_info()
-print li.get_total_session_time()
-li.print_phases_summary()
-li.print_pauses()
-li.print_pause_summary()
