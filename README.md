@@ -8,6 +8,9 @@ Open-source python API under GNU license for automation of ResearchLoggers' logs
 
 ## How to use
 
+### Dependencies
+- termcolor [sudo apt-get install python-termcolor]
+
 ### Methods
 The LogInfo object provides information on the data by using descriptive statistics. It must be instantiated by providing:
 
@@ -68,7 +71,7 @@ The LogInfo object provides information on the data by using descriptive statist
 
 #### Pauses
 - **print_pauses()**: Prints an enumeration of all the pauses in the session, including the start and end of each one.
-- **print_pause_summary()**: Prints a summary of the pauses. It includes:
+- **print_pause_summary(begin, end)**: Prints a summary of the pauses in the interval [begin, end]. It includes:
      - Total amount of pauses in the session.
      - Amount of:
          - Short pauses.

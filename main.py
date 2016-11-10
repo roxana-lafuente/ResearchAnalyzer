@@ -49,3 +49,8 @@ for f in li.get_all_pressed_keys():
 for f in li.get_letter_info():
     print f
 li.print_key_summary()
+
+# Print pauses info
+begin, end = 0, 5000000  # Need to specify the interval of interest
+li.print_pauses(begin, end)
+li.print_pause_summary(begin, end)
