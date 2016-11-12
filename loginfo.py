@@ -349,6 +349,12 @@ class LogInfo:
         """
         self._pause_info.print_pauses(begin, end)
 
+    def get_time_by_active_window(self):
+        """
+        Prints a summary on the pauses.
+        """
+        return self._pause_info.get_time_by_active_window()
+
     def get_pauses_by_phase(self, phase):
         """
         Returns a list with all the pauses in:
@@ -630,6 +636,32 @@ class PauseInfo:
             if begin <= min(int(nmiliseconds), int(cmiliseconds)) and max(int(nmiliseconds), int(cmiliseconds)) <= end:
                 pauses += [(int(cmiliseconds), int(nmiliseconds)-int(cmiliseconds))]
         return pauses
+
+    def get_time_by_active_window(self):
+        """
+        TODO: Change this comment so that it looks like the others
+        By using the knowledge that inmediately after a click or a key is down inside a program
+        then that program is the active program, then the time between that event and the next
+        can be assigned as time used inside that program, the active one.
+        Doing this for all of the recorded events gives back the ammount of time spent on each
+        active program, with no superposition in between them whatsoever.
+        """
+        time_by_active_window = {}
+        time_by_active_window["total"] = 0
+        for i in range(len(self._mixed_parser.keys)-1):
+
+            # Get current keystroke.
+            cdate, ctime, cprogram_name, cusername, cwindow_id, cwindow_title, cmiliseconds, ckey, cmsg, cxcoord, cycoord = self._mixed_parser.keys[i]
+            # Get next keystroke.
+            ndate, ntime, nprogram_name, nusername, nwindow_id, nwindow_title, nmiliseconds, nkey, nmsg, nxcoord, nycoord = self._mixed_parser.keys[i+1]
+
+            delta = int(nmiliseconds)-int(cmiliseconds)
+            if cwindow_title in time_by_active_window:
+                  time_by_active_window[cwindow_title] += delta
+            else: time_by_active_window[cwindow_title] = delta
+
+            time_by_active_window["total"] += delta
+        return time_by_active_window
 
     def print_pauses(self, begin, end):
         """

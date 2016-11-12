@@ -32,6 +32,7 @@ li = LogInfo(path + "/example_log/click_images/clickimagelogfile_zxysp.txt", # Y
              path + "/example_log/detailed_log/detailedlogfile_zxysp.txt", # Your detailed log file here
              path + "/example_log/system_log/system_log_zxysp.txt") # Your system log data here
 # Print clicks summary info.
+
 print "Unique pressed clicks:", li.get_unique_pressed_clicks()
 print
 print "In-order pressed clicks:", li.get_all_pressed_clicks()
@@ -50,5 +51,15 @@ for f in li.get_letter_info():
     print f
 li.print_key_summary()
 
+# Print pauses info
+begin, end = 0, 5000000  # Need to specify the interval of interest
+li.print_pauses(begin, end)
+li.print_pause_summary(begin, end)
+
+
+d = li.get_time_by_active_window()
+for a in d:
+    print a + "....." + str(d[a])
+    
 # Prints the keystroke progression graph.
 li.plot_keystroke_progression_graph(10)
