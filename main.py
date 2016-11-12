@@ -49,3 +49,6 @@ for f in li.get_all_pressed_keys():
 for f in li.get_letter_info():
     print f
 li.print_key_summary()
+
+# Prints the keystroke progression graph.
+li.plot_keystroke_progression_graph(10)

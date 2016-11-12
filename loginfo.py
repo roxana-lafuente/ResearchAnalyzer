@@ -30,6 +30,8 @@ import re
 import datetime
 from constants_analysis import *
 from math import sqrt
+from collections import defaultdict
+import matplotlib.pyplot as plt
 
 # Get the absolute path to the test files in the directory variable
 from inspect import getsourcefile
@@ -371,6 +373,39 @@ class LogInfo:
         Prints a summary of the pauses in the session.
         """
         return self._pause_info.print_pause_summary(0, self._pi.greatest_time)
+
+    def plot_keystroke_progression_graph(self, bin_size):
+        """
+        Plots a keystroke progression graph.
+        @bin_size is the bin size in seconds
+        """
+        last_bin_size = bin_size * 1000  # Convert to milliseconds
+        current_bin, current_bin_size = 0, 0
+        keystrokes = defaultdict(int)
+        current_keystrokes, i = 0, 0
+        start = int(self.keys_parser.keys[0][6])  # ms
+        while i < len(self.keys_parser.keys):
+            d, t, pn, user, wid, title, ms, key_id, msg, x, y = self.keys_parser.keys[i]
+            ms = int(ms) - start  # force to start from ms 0
+            while i < len(self.keys_parser.keys) and current_bin_size + ms <= last_bin_size:
+                if msg == KDOWN:
+                    current_bin_size += ms
+                    current_keystrokes += 1
+                i += 1
+                if i < len(self.keys_parser.keys):
+                    d, t, pn, user, wid, title, ms, key_id, msg, x, y = self.keys_parser.keys[i]
+                    ms = int(ms) - start  # force to start from ms 0
+            current_bin_size = 0
+            last_bin_size *= 2
+            keystrokes[current_bin] = current_keystrokes
+            current_bin += 1
+            i += 1
+        fig, ax = plt.subplots(figsize=(12,8))
+        ax.plot(keystrokes.keys(), keystrokes.values(), 'r', label='Keystroke progression graph', color='Cyan')
+        ax.set_xlabel('# Bins of %s milliseconds' % str(bin_size * 1000))
+        ax.set_ylabel('# Keystrokes')
+        ax.set_title("Keystroke progression graph")
+        plt.show()
 
 
 class PhaseInfo:

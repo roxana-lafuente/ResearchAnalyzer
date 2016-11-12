@@ -55,6 +55,10 @@ The LogInfo object provides information on the data by using descriptive statist
      - Unique erase keys used.
      - Unique movement keys used.
      - Unique key combos used.
+- **plot_keystroke_progression_graph(bin_size)**: It plots the amount of pressed down keys against time. Each of the bin size can be specified in seconds.
+
+![Keystrokes summary](/images/keystroke_progression_graph.png)
+
 
 #### Phases
 - **get_orientation_info()**: Returns a tuple with the format (start time, start end).
