@@ -49,7 +49,7 @@ class LogInfo:
     """
     Presents the user with different types of summaries of the recorded logs.
     """
-    def __init__(self, clicks_filename, keys_filename, slog_filename):
+    def __init__(self, clicks_filename, keys_filename, slog_filename, finale=None):
         """
         Initializes the needed parsers for the LogInfo class.
         """
@@ -59,11 +59,14 @@ class LogInfo:
         self.clicks_filename = clicks_filename
         self.keys_filename = keys_filename
         self.slog_filename = slog_filename
-        try:
-            self._pi = PhaseInfo(self.mixed_parser, self.slog_filename)
-            self._pause_info = PauseInfo(self.mixed_parser)
-        except IndexError:
-            pass
+        self.finale = finale
+        self._pause_info = PauseInfo(self.mixed_parser)
+        if self.finale is not None:
+            # Phases analysis is only available if the finale file is given.
+            try:
+                self._pi = PhaseInfo(self.mixed_parser, self.slog_filename)
+            except IndexError:
+                pass
 
     def get_unique_pressed_clicks(self):
         """
@@ -340,23 +343,20 @@ class LogInfo:
         self._pi.print_revision_info()
         self._pi.print_total_session_info()
 
-    def print_pauses(self):
+    def print_pauses(self, begin, end):
         """
         Prints a summary on the pauses.
         """
-        self._pause_info.print_pauses(0, self._pi.greatest_time)
+        self._pause_info.print_pauses(begin, end)
 
-    def get_pauses(self, phase=0):
+    def get_pauses_by_phase(self, phase):
         """
         Returns a list with all the pauses in:
-        - phase == 0: the session.
         - phase == 1: the orientation phase.
         - phase == 2: the drafting phase.
         - phase == 3: the revision phase.
         """
-        if phase == 0:
-            return self._pause_info.get_pauses(0, self._pi.greatest_time)
-        elif phase == 1:
+        if phase == 1:
             begin, end = self._pi.get_orientation_info()
             return self._pause_info.get_pauses(begin, end)
         elif phase == 2:
@@ -368,11 +368,11 @@ class LogInfo:
         else:
             return None
 
-    def print_pause_summary(self):
+    def print_pause_summary(self, begin, end):
         """
         Prints a summary of the pauses in the session.
         """
-        return self._pause_info.print_pause_summary(0, self._pi.greatest_time)
+        return self._pause_info.print_pause_summary(begin, end)
 
     def plot_keystroke_progression_graph(self, bin_size):
         """
