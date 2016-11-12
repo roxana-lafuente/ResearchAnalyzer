@@ -6,10 +6,17 @@ Open-source python API under GNU license for automation of ResearchLoggers' logs
 - Pauses
 - Translation phases (provided that some preconditions are fulfilled)
 
+
+
+
+
 ## How to use
 
 ### Dependencies
 - termcolor [sudo apt-get install python-termcolor]
+- matplotlib
+
+
 
 ### Methods
 The LogInfo object provides information on the data by using descriptive statistics. It must be instantiated by providing:
@@ -17,6 +24,8 @@ The LogInfo object provides information on the data by using descriptive statist
 - A clicks log.
 - A keystroke log.
 - A system log.
+
+
 
 #### Clicks
 - **get_unique_pressed_clicks()**: Returns a set with all unique types of clicks used during the logging session.
@@ -35,6 +44,7 @@ The LogInfo object provides information on the data by using descriptive statist
      - Mean click press time.
      - Click press time variance.
      - Click press time standard deviation.
+
 
 
 #### Keystrokes
@@ -60,7 +70,12 @@ The LogInfo object provides information on the data by using descriptive statist
      - Unique key combos used.
 - **plot_keystroke_progression_graph(bin_size)**: It plots the amount of pressed down keys against time. Each of the bin size can be specified in seconds.
 
-![Keystrokes summary](/images/keystroke_progression_graph.png)
+![Keystroke progression graph](/images/keystroke_progression_graph.png)
+
+- **plot_clicks_progression_graph(bin_size)**: It plots the amount of pressed down clicks against time. Each of the bin size can be specified in seconds.
+
+![Clicks progression graph](/images/clicks_progression_graph.png)
+
 
 
 #### Phases
@@ -73,6 +88,8 @@ The LogInfo object provides information on the data by using descriptive statist
      - Phase duration.
      - Percentage of the session dedicated to the phase.
 
+
+
 #### Pauses
 - **print_pauses()**: Prints an enumeration of all the pauses in the session, including the start and end of each one.
 - **print_pause_summary(begin, end)**: Prints a summary of the pauses in the interval [begin, end]. It includes:
@@ -84,6 +101,8 @@ The LogInfo object provides information on the data by using descriptive statist
          - Non significant pauses.
      - Mean pause time.
      - Pause time variance.
+
+
 
 ### Example
 An usage example of ResearchAnalyzer can be found in main.py; it uses the ResearchLogger's example log files on the "example_log" folder.

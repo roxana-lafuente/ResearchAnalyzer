@@ -407,6 +407,39 @@ class LogInfo:
         ax.set_title("Keystroke progression graph")
         plt.show()
 
+    def plot_clicks_progression_graph(self, bin_size):
+        """
+        Plots a clicks progression graph.
+        @bin_size is the bin size in seconds
+        """
+        last_bin_size = bin_size * 1000  # Convert to milliseconds
+        current_bin, current_bin_size = 0, 0
+        keystrokes = defaultdict(int)
+        current_keystrokes, i = 0, 0
+        start = int(self.clicks_parser.clicks[0][6])  # ms
+        while i < len(self.clicks_parser.clicks):
+            date, time, pn, user, wid, title, ms, msg, x, y, res, img = self.clicks_parser.clicks[i]
+            ms = int(ms) - start  # force to start from ms 0
+            while i < len(self.clicks_parser.clicks) and current_bin_size + ms <= last_bin_size:
+                if "down" in msg:
+                    current_bin_size += ms
+                    current_keystrokes += 1
+                i += 1
+                if i < len(self.clicks_parser.clicks):
+                    date, time, pn, user, wid, title, ms, msg, x, y, res, img = self.clicks_parser.clicks[i]
+                    ms = int(ms) - start  # force to start from ms 0
+            current_bin_size = 0
+            last_bin_size *= 2
+            keystrokes[current_bin] = current_keystrokes
+            current_bin += 1
+            i += 1
+        fig, ax = plt.subplots(figsize=(12,8))
+        ax.plot(keystrokes.keys(), keystrokes.values(), 'r', label='Keystroke progression graph', color='Cyan')
+        ax.set_xlabel('# Bins of %s milliseconds' % str(bin_size * 1000))
+        ax.set_ylabel('# Clicks pressed')
+        ax.set_title("Clicks progression graph")
+        plt.show()
+
 
 class PhaseInfo:
     """
