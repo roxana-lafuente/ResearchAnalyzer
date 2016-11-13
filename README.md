@@ -78,6 +78,11 @@ The LogInfo object provides information on the data by using descriptive statist
 
 
 
+#### Resources
+- **get_time_by_active_window()**: It returns a dictionary whose key is the name of a window used and its value is the time spent in it (in milliseconds). A special entry "total" contains the total session time.
+
+
+
 #### Phases
 - **get_orientation_info()**: Returns a tuple with the format (start time, start end).
 - **get_drafting_info()**: Returns a tuple with the format (start time, start end).

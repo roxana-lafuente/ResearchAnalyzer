@@ -50,6 +50,12 @@ for f in li.get_letter_info():
     print f
 li.print_key_summary()
 
+# Get the time spent in each window.
+print "Time spent in:"
+times_by_window = li.get_time_by_active_window()
+for k in times_by_window:
+    print "\t * '%s' = %s ms" % (k, times_by_window[k])
+
 # Plots the keystroke progression graph.
 li.plot_keystroke_progression_graph(1)
 
