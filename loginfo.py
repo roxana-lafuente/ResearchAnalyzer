@@ -393,24 +393,26 @@ class LogInfo:
         while i < len(self.keys_parser.keys):
             d, t, pn, user, wid, title, ms, key_id, msg, x, y = self.keys_parser.keys[i]
             ms = int(ms) - start  # force to start from ms 0
-            while i < len(self.keys_parser.keys) and current_bin_size + ms <= last_bin_size:
-                if msg == KDOWN:
+            if current_bin_size + ms <= last_bin_size:
+                if "down" in msg:
                     current_bin_size += ms
                     current_keystrokes += 1
-                i += 1
-                if i < len(self.keys_parser.keys):
-                    d, t, pn, user, wid, title, ms, key_id, msg, x, y = self.keys_parser.keys[i]
-                    ms = int(ms) - start  # force to start from ms 0
-            current_bin_size = 0
-            last_bin_size *= 2
-            keystrokes[current_bin] = current_keystrokes
-            current_bin += 1
+            else:
+                current_bin_size = 0
+                if "down" in msg:
+                    current_keystrokes += 1
+                    current_bin_size += ms
+                last_bin_size *= 2
+                keystrokes[current_bin] = current_keystrokes
+                current_bin += 1
             i += 1
         fig, ax = plt.subplots(figsize=(12,8))
-        ax.plot(keystrokes.keys(), keystrokes.values(), 'r', label='Keystroke progression graph', color='Cyan')
+        ax.plot(keystrokes.keys(), keystrokes.values(), 'r', color='#4682b4')
+        ax.plot(keystrokes.keys(), keystrokes.values(), 'o', color='#19457e')
         ax.set_xlabel('# Bins of %s milliseconds' % str(bin_size * 1000))
         ax.set_ylabel('# Keystrokes')
         ax.set_title("Keystroke progression graph")
+        ax.plot()
         plt.show()
 
     def plot_clicks_progression_graph(self, bin_size):
@@ -420,27 +422,28 @@ class LogInfo:
         """
         last_bin_size = bin_size * 1000  # Convert to milliseconds
         current_bin, current_bin_size = 0, 0
-        keystrokes = defaultdict(int)
-        current_keystrokes, i = 0, 0
+        clicks = defaultdict(int)
+        current_clicks, i = 0, 0
         start = int(self.clicks_parser.clicks[0][6])  # ms
         while i < len(self.clicks_parser.clicks):
             date, time, pn, user, wid, title, ms, msg, x, y, res, img = self.clicks_parser.clicks[i]
             ms = int(ms) - start  # force to start from ms 0
-            while i < len(self.clicks_parser.clicks) and current_bin_size + ms <= last_bin_size:
+            if current_bin_size + ms <= last_bin_size:
                 if "down" in msg:
                     current_bin_size += ms
-                    current_keystrokes += 1
-                i += 1
-                if i < len(self.clicks_parser.clicks):
-                    date, time, pn, user, wid, title, ms, msg, x, y, res, img = self.clicks_parser.clicks[i]
-                    ms = int(ms) - start  # force to start from ms 0
-            current_bin_size = 0
-            last_bin_size *= 2
-            keystrokes[current_bin] = current_keystrokes
-            current_bin += 1
+                    current_clicks += 1
+            else:
+                current_bin_size = 0
+                if "down" in msg:
+                    current_clicks += 1
+                    current_bin_size += ms
+                last_bin_size *= 2
+                clicks[current_bin] = current_clicks
+                current_bin += 1
             i += 1
         fig, ax = plt.subplots(figsize=(12,8))
-        ax.plot(keystrokes.keys(), keystrokes.values(), 'r', label='Keystroke progression graph', color='Cyan')
+        ax.plot(clicks.keys(), clicks.values(), 'r', color='#4682b4')
+        ax.plot(clicks.keys(), clicks.values(), 'o', color='#19457e')
         ax.set_xlabel('# Bins of %s milliseconds' % str(bin_size * 1000))
         ax.set_ylabel('# Clicks pressed')
         ax.set_title("Clicks progression graph")

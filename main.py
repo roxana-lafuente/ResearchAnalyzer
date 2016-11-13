@@ -51,7 +51,7 @@ for f in li.get_letter_info():
 li.print_key_summary()
 
 # Plots the keystroke progression graph.
-li.plot_keystroke_progression_graph(10)
+li.plot_keystroke_progression_graph(1)
 
 # Plots the clicks progression graph.
-li.plot_clicks_progression_graph(10)
+li.plot_clicks_progression_graph(1)
