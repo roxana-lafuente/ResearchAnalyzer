@@ -61,3 +61,6 @@ li.plot_keystroke_progression_graph(1)
 
 # Plots the clicks progression graph.
 li.plot_clicks_progression_graph(1)
+
+# Plots a pie chart with the values of the time spent in each window
+li.plot_window_distribution_pie_chart()

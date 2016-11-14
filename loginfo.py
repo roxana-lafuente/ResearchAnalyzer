@@ -24,6 +24,7 @@
 import mixed_parser
 import click_parser
 import key_parser
+from common import convert_to_hex
 import copy
 from termcolor import colored
 import re
@@ -39,10 +40,13 @@ from os.path import abspath, dirname
 directory = dirname(dirname(abspath(getsourcefile(lambda: 0))))
 
 import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 sys.path.append(directory + "/ResearchLogger/PyKeylogger-1.2.1")
 from constants import *
 
 import codecs
+from colour import Color
 
 
 class LogInfo:
@@ -367,12 +371,40 @@ class LogInfo:
             ndate, ntime, nprogram_name, nusername, nwindow_id, nwindow_title, nmiliseconds, nkey, nmsg, nxcoord, nycoord = self.mixed_parser.keys[i+1]
 
             delta = int(nmiliseconds)-int(cmiliseconds)
-            if cwindow_title in time_by_active_window:
-                  time_by_active_window[cwindow_title] += delta
-            else: time_by_active_window[cwindow_title] = delta
+            if cprogram_name in time_by_active_window:
+                time_by_active_window[cprogram_name] += delta
+            else:
+                time_by_active_window[cprogram_name] = delta
 
             time_by_active_window["total"] += delta
         return time_by_active_window
+
+    def plot_window_distribution_pie_chart(self):
+        """
+        Plots a pie chart of how the windows used in the session.
+        """
+        # Get data
+        win_distrib = self.get_time_by_active_window()
+        del win_distrib['total']
+        keys = win_distrib.keys()
+        values = win_distrib.values()
+
+        # Pick colors
+        start_color = Color("#CCE5FF")
+        colors = map(convert_to_hex, list(start_color.range_to(Color("#003366"), len(keys))))
+
+        # Plot pie chart
+        fig, ax = plt.subplots(figsize=(12,8))
+        ax.pie(values,
+               autopct='%1.0f%%',
+               pctdistance=1.1,
+               labeldistance=0.5,
+               shadow=True,
+               startangle=10,
+               colors=colors)
+        ax.set_title("Pie chart: Time spent by window")
+        plt.legend(keys, loc="best",shadow=True)
+        plt.show()
 
     def get_pauses_by_phase(self, phase):
         """

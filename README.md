@@ -15,6 +15,7 @@ Open-source python API under GNU license for automation of ResearchLoggers' logs
 ### Dependencies
 - termcolor [sudo apt-get install python-termcolor]
 - matplotlib
+- colous [pip install colour]
 
 
 
@@ -80,6 +81,9 @@ The LogInfo object provides information on the data by using descriptive statist
 
 #### Resources
 - **get_time_by_active_window()**: It returns a dictionary whose key is the name of a window used and its value is the time spent in it (in milliseconds). A special entry "total" contains the total session time.
+- **plot_window_distribution_pie_chart()**: Plots a pie chart of the times spent in each window in the session.
+
+![Window time distribution pie chart](/images/pie_chart_window_distribution.png)
 
 
 
