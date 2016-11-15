@@ -64,3 +64,7 @@ li.plot_clicks_progression_graph(1)
 
 # Plots a pie chart with the values of the time spent in each window
 li.plot_window_distribution_pie_chart()
+
+# Print pauses in interval [0, 5000000]
+li.print_pauses(0, 5000000)
+li.print_pause_summary(0, 5000000)

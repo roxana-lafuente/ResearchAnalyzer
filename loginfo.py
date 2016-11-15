@@ -28,6 +28,7 @@ from common import convert_to_hex
 import copy
 from termcolor import colored
 import re
+from pause_info import PauseInfo
 import datetime
 from constants_analysis import *
 from math import sqrt
@@ -406,24 +407,24 @@ class LogInfo:
         plt.legend(keys, loc="best",shadow=True)
         plt.show()
 
-    def get_pauses_by_phase(self, phase):
-        """
-        Returns a list with all the pauses in:
-        - phase == 1: the orientation phase.
-        - phase == 2: the drafting phase.
-        - phase == 3: the revision phase.
-        """
-        if phase == 1:
-            begin, end = self._pi.get_orientation_info()
-            return self._pause_info.get_pauses(begin, end)
-        elif phase == 2:
-            begin, end = self._pi.get_drafting_info()
-            return self._pause_info.get_pauses(begin, end)
-        elif phase == 3:
-            begin, end = self._pi.get_revision_info()
-            return self._pause_info.get_pauses(begin, end)
-        else:
-            return None
+    # def get_pauses_by_phase(self, phase):
+    #     """
+    #     Returns a list with all the pauses in:
+    #     - phase == 1: the orientation phase.
+    #     - phase == 2: the drafting phase.
+    #     - phase == 3: the revision phase.
+    #     """
+    #     if phase == 1:
+    #         begin, end = self._pi.get_orientation_info()
+    #         return self._pause_info.get_pauses(begin, end)
+    #     elif phase == 2:
+    #         begin, end = self._pi.get_drafting_info()
+    #         return self._pause_info.get_pauses(begin, end)
+    #     elif phase == 3:
+    #         begin, end = self._pi.get_revision_info()
+    #         return self._pause_info.get_pauses(begin, end)
+    #     else:
+    #         return None
 
     def print_pause_summary(self, begin, end):
         """
@@ -499,271 +500,3 @@ class LogInfo:
         ax.set_ylabel('# Clicks pressed')
         ax.set_title("Clicks progression graph")
         plt.show()
-
-
-class PhaseInfo:
-    """
-    Given a corpus with # as the marker for the end of drafting phases.
-    This class determines info about the translation phases.
-    """
-
-    def __init__(self, mp, slog_filename):
-        """
-        Initializes the PhaseInfo class with the mixed parser and the system log path.
-        """
-        self.mixed_parser = copy.copy(mp)
-        self.slog_filename = slog_filename
-        self._set_phases()
-
-    def _set_phases(self):
-        """
-        Sets the needed values to calculate the translation phases.
-        """
-        # Get parser.
-        self.clicks = self.mixed_parser.clicks
-        self.keys = self.mixed_parser.keys
-        # tsparser = mixed_parser.Parser(dfile, cfile, TS)
-        # keys = copy.copy(tsparser.keys)
-        # Get Clicks.
-        self.openClicks = []
-        for click in self.clicks:
-            if 'Abrir' in click:
-                self.openClicks += [click]
-
-        # Planning (Start)
-        self.ostime = int(self.openClicks[-1][6])
-
-        # Drafting (End)
-        self.detime = 0
-        try:
-            for k in self.keys:
-                match = re.findall(r'[\S]*#', " " + ",".join(k))
-                if match != []:
-                    self.detime = int(match[0].split(",")[1])
-                    break
-        except:
-            pass
-
-        # Revision (End)
-        # try:
-        system = open(self.slog_filename, 'r').read()
-        self.rostime = re.findall(r'[\S]* [\S]* [\S]* [\S]*       [\S]*      [\S]*    [\S]*    [\S]* [\S]* [\S]* [\S]*\n[\S]* [\S]* [\S]*\n[\S]* [\S]* [\S]* [\S]*\n[\S]* [\S]* [\S]*\n[\S]* [\S]*\n[\S]* [\S]*%s' % self.ostime, system)[0].split(",")[0]
-        self.rretime = re.findall(r'END: [\S]*', system)[0].split(" ")[1]
-        self.rostime = datetime.datetime.strptime(self.rostime, "%H:%M:%S")
-        self.rretime = datetime.datetime.strptime(self.rretime, "%H%M%S")
-        self.ttime = self.rretime - self.rostime
-        self.ttime = str(self.ttime).split(":")
-        self.ftime = self.ostime + (int(self.ttime[1]) * 60 + int(self.ttime[2])) * 1000
-        self.ttime = (int(self.ttime[1]) * 60 + int(self.ttime[2])) * 1000
-        self.retime = self.ftime - self.detime
-        self.retime = self.ftime
-        self.rstime = self.detime
-        self.rtime = self.retime - self.rstime
-        # Greatest time seen
-        self.greatest_time = self.retime
-
-        # Planning (End)
-        self.oetime = int(self.keys[0][6])
-        self.otime = self.oetime-self.ostime
-
-        # Drafting (Start)
-        self.dstime = self.oetime
-
-        # Revision (Start)
-        self.rstime = self.detime
-        # Drafting (Show Results)
-        self.dtime = self.detime - self.dstime
-
-    def print_orientation_info(self):
-        """
-        Prints the info on the Planning phase.
-        """
-        print "*** ORIENTACIÓN ***"
-        print "Tiempo de inicio:", colored(self.ostime, 'cyan')
-        print "Tiempo de finalización:", colored(self.oetime, 'cyan')
-        print "Duración:", colored(self.otime, 'cyan'), "ms =",
-        print colored(self.otime/float(1000), 'cyan'), "sec,"
-        try:
-            print "Porcentaje de la sesión dedicado a la fase de orientación:",
-            print colored((self.otime/float(self.ttime))*100, 'cyan'), "%"
-        except NameError:
-            # st - session time
-            self.st = max(int(self.keys[-1][6]), int(self.openClicks[-1][6]))
-            self.st -= int(self.openClicks[-2][6])
-            print "Porcentaje de la sesión dedicado a la fase de orientación:",
-            print colored((self.otime/float(self.st))*100, 'cyan'), "%"
-
-    def print_drafting_info(self):
-        """
-        Prints the info on the Drafting phase.
-        """
-        print "*** ELABORACIÓN DE BORRADOR ***"
-        print "Tiempo de inicio:", colored(self.dstime, "cyan")
-        print "Tiempo de finalización:", colored(self.detime, "cyan")
-        print "Duración:", colored(self.dtime, "cyan"), "ms,",
-        print colored(self.dtime/float(1000), "cyan"), "sec,"
-        try:
-            print "Porcentaje de la sesión dedicado a la fase de elaboración",
-            print "de borrador:",
-            print colored((self.dtime/float(self.ttime))*100, 'cyan'), "%"
-        except NameError:
-            self.st = max(int(self.keys[-1][6]), int(self.openClicks[-1][6]))
-            self.st -= int(self.openClicks[-2][6])
-            print "Porcentaje de la sesión dedicado a la fase de elaboración",
-            print "de borrador:",
-            print colored((self.dtime/float(self.stime))*100, "cyan"), "%"
-
-    def print_revision_info(self):
-        """
-        Prints the info on the Revision phase.
-        """
-        print "*** RESUMEN ***"
-        print "Tiempo de inicio:", colored(self.rstime, "cyan")
-        print "Tiempo de finalización:", colored(self.retime, 'cyan')
-        print "Duración:", colored(self.rtime, 'cyan'), "ms, =",
-        print colored(self.rtime/float(1000), 'cyan'), "sec,"
-        try:
-            print "Porcentaje de la sesión dedicado a la fase de revisión:",
-            print colored((self.rtime/float(self.ttime))*100, 'cyan'), "%"
-        except NameError:
-            self.st = max(int(self.keys[-1][6]), int(self.openClicks[-1][6]))
-            self.st -= int(self.openClicks[-2][6])
-            print (self.rtime/float(self.st))*100, "%"
-
-    def print_total_session_info(self):
-        """
-        Prints the general info on the session.
-        """
-        print "*** SESIÓN ***"
-        try:
-            print "Tiempo total:", colored(self.ttime, 'cyan'), "ms =",
-            print colored(self.ttime/float(1000), 'cyan'), "sec =",
-            print colored(self.ttime/float(1000*60), 'cyan'), "min"
-        except NameError:
-            self.st = max(int(self.keys[-1][6]), int(self.openClicks[-1][6]))
-            self.st -= int(self.openClicks[-2][6])
-            print "Tiempo total:", colored(self.stime, "cyan"), "ms =",
-            print colored(self.stime/float(1000), 'cyan'), "sec =",
-            print colored(self.stime/float(1000*60), 'cyan'), "min"
-
-    def get_orientation_info(self):
-        """
-        Returns a pair with the start time and end time of the orientation
-        phase in milliseconds.
-        """
-        return (self.ostime, self.oetime)
-
-    def get_drafting_info(self):
-        """
-        Returns a pair with the start time and end time of the drafting phase
-        in milliseconds.
-        """
-        return (self.dstime, self.detime)
-
-    def get_revision_info(self):
-        """
-        Returns a pair with the start time and end time of the revision phase
-        in milliseconds.
-        """
-        return (self.rstime, self.retime)
-
-    def get_total_session_time(self):
-        """
-        Returns the total time of the session.
-        """
-        return self.ttime
-
-
-class PauseInfo:
-    """
-    Class that shows summaries on pauses from a given log.
-    """
-    def __init__(self, mixed_parser):
-        """
-        Defines the needed times pauses for the PauseInfo class.
-        """
-        self._mixed_parser = mixed_parser
-
-    def _is_short_pause(self, pause):
-        """
-        Determines if a pause is a short one.
-        - pause is in milliseconds
-        - a short pause is between 2 and 6 seconds
-        """
-        return 2000 <= pause and pause < 6000
-
-    def _is_medium_pause(self, pause):
-        """
-        Determines if a pause is a medium one.
-        - pause is in milliseconds
-        - a medium pause is between 6 and 60 seconds
-        """
-        return 6000 <= pause and pause < 60000
-
-    def _is_big_pause(self, pause):
-        """
-        Determines if a pause is a big one.
-        - pause is in milliseconds
-        - a big pause is greater than 60 seconds
-        """
-        return pause >= 60000
-
-    def get_pauses(self, begin, end):
-        """
-        Given an interval in which pauses should be look for.
-        It returns the duration of the pauses and the millisecond in which they
-        started.
-        """
-        pauses = []
-        for i in range(len(self._mixed_parser.keys)-1):
-            # Get current keystroke.
-            cdate, ctime, cprogram_name, cusername, cwindow_id, cwindow_title, cmiliseconds, ckey, cmsg, cxcoord, cycoord = self._mixed_parser.keys[i]
-            # Get next keystroke.
-            ndate, ntime, nprogram_name, nusername, nwindow_id, nwindow_title, nmiliseconds, nkey, nmsg, nxcoord, nycoord = self._mixed_parser.keys[i+1]
-            if begin <= min(int(nmiliseconds), int(cmiliseconds)) and max(int(nmiliseconds), int(cmiliseconds)) <= end:
-                pauses += [(int(cmiliseconds), int(nmiliseconds)-int(cmiliseconds))]
-        return pauses
-
-    def print_pauses(self, begin, end):
-        """
-        Prints a summary of the short, medium and big pauses in the session.
-        All pauses that do not fall in these categories are ignored.
-        """
-        pauses = self.get_pauses(begin, end)
-        i = 0
-        for pause in pauses:
-            i += 1
-            if self._is_short_pause(pause):
-                print "Pausa #", i, ":", colored(str(pause), "green"), "ms"
-            elif self._is_medium_pause(pause):
-                print "Pausa #", i, ":", colored(str(pause), "yellow"), "ms"
-            elif self._is_big_pause(pause):
-                # It's a big pause
-                print "Pausa #", i, ":", colored(str(pause), "red"), "ms"
-
-    def print_pause_summary(self, begin, end):
-        pauses = self.get_pauses(begin, end)
-        # Set how many pauses occurred and which types.
-        short_pauses, medium_pauses, big_pauses = 0, 0, 0
-        sum_pauses = 0
-        var_pauses = 0
-        for pause in pauses:
-            start, duration = pause
-            sum_pauses += duration
-            var_pauses += duration * duration
-            short_pauses += self._is_short_pause(duration)
-            medium_pauses += self._is_medium_pause(duration)
-            big_pauses += self._is_big_pause(duration)
-        # Calculates the variance.
-        esp_pauses = sum_pauses/float(len(pauses))
-        var_pauses = (1/float(len(pauses)) * var_pauses) - (esp_pauses * esp_pauses)
-        other_pauses = len(pauses)-short_pauses-medium_pauses-big_pauses
-        # Print results.
-        print "*** RESUMEN DE PAUSAS ***"
-        print "Cantidad total de pausas en el intervalo [", begin, "ms ,", end, "ms ]:", colored(len(pauses), "blue")
-        print "Cantidad de pausas cortas:", colored(short_pauses, "blue"), "-", colored(short_pauses/float(len(pauses)), "cyan"), "%"
-        print "Cantidad de pausas medianas:", colored(medium_pauses, "blue"), "-", colored(medium_pauses/float(len(pauses)), "cyan"), "%"
-        print "Cantidad de pausas largas:", colored(big_pauses, "blue"), "-", colored(big_pauses/float(len(pauses)), "cyan"), "%"
-        print "Cantidad de pausas no significativas:", colored(other_pauses, "blue"), "-", colored(other_pauses/float(len(pauses)), "cyan"), "%"
-        print "Tiempo de pausa promedio:", colored(esp_pauses, "blue")
-        print "Varianza en el tiempo de las pausas:", colored(var_pauses, "blue")
