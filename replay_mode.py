@@ -135,8 +135,8 @@ class ReplayMode:
             self.ycursor -= 1
 
     def replay_uparrow(self, msg):
-        print "uparrow"
-        # if msg == KDOWN:
+        if msg == KDOWN:
+            self.screen += "#"
         #     self.xcursor += 1
 
     def replay_rightarrow(self, msg):
@@ -144,8 +144,8 @@ class ReplayMode:
             self.ycursor += 1
 
     def replay_downarrow(self, msg):
-        print "downarrow"
-        # if msg == KDOWN:
+        if msg == KDOWN:
+            self.screen += "+"
         #     self.xcursor -= 1
 
     def replay_repag(self, msg):
@@ -309,6 +309,9 @@ class ReplayMode:
     def print_screen(self):
         print self.screen
 
+    def get_screen(self):
+        return self.screen
+
     def replay_mode(self):
         """
             Replays the translation session from the logfile with advanced
@@ -319,7 +322,19 @@ class ReplayMode:
 # Main program
 keys_filename = 'example_log/detailed_log/detailedlogfile_zxysp.txt'
 clicks_filename = 'example_log/click_images/clickimagelogfile_zxysp.txt'
+finale_filename = 'example_log/example_log_target_text.txt'
+
+with open(finale_filename, "r") as f:
+    fwords = f.read().split("\n")[3].split(" ")
 
 r = ReplayMode(keys_filename, clicks_filename, 'Sesión de traducción')
 r.replay_quick_mode()
-r.print_screen()
+print r.get_screen()
+rwords = r.get_screen().split(" ")[:-1]
+tmp = rwords[-1].split(".")
+# print tmp
+# rwords[-1], missing_changes = tmp[0], tmp[1]
+for i in range(len(rwords)):
+    if rwords[i] != fwords[i]:
+        print rwords[i], fwords[i]
+print rwords
