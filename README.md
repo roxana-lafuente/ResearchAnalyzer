@@ -16,6 +16,7 @@ Open-source python API under GNU license for automation of ResearchLoggers' logs
 - termcolor [sudo apt-get install python-termcolor]
 - matplotlib
 - colous [pip install colour]
+- Python Image Library (PIL) [sudo apt-get install python-pil]
 
 
 
@@ -45,7 +46,8 @@ The LogInfo object provides information on the data by using descriptive statist
      - Mean click press time.
      - Click press time variance.
      - Click press time standard deviation.
-
+- **plot_clicks_in_screenshot()**: Marks in a screenshot where clicks were made.
+![Visualization of clicks in the screen session](/images/clicks_in_screen.png)
 
 
 #### Keystrokes

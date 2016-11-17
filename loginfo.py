@@ -34,6 +34,7 @@ from constants_analysis import *
 from math import sqrt
 from collections import defaultdict
 import matplotlib.pyplot as plt
+from PIL import Image
 
 # Get the absolute path to the test files in the directory variable
 from inspect import getsourcefile
@@ -54,16 +55,17 @@ class LogInfo:
     """
     Presents the user with different types of summaries of the recorded logs.
     """
-    def __init__(self, clicks_filename, keys_filename, slog_filename, finale=None):
+    def __init__(self, clicks_fn, keys_fn, screen_fn, system_fn, finale=None):
         """
         Initializes the needed parsers for the LogInfo class.
         """
-        self.clicks_parser = click_parser.ClickParser(clicks_filename)
-        self.keys_parser = key_parser.KeyParser(keys_filename)
-        self.mixed_parser = mixed_parser.Parser(keys_filename, clicks_filename)
-        self.clicks_filename = clicks_filename
-        self.keys_filename = keys_filename
-        self.slog_filename = slog_filename
+        self.clicks_parser = click_parser.ClickParser(clicks_fn)
+        self.keys_parser = key_parser.KeyParser(keys_fn)
+        self.mixed_parser = mixed_parser.Parser(keys_fn, clicks_fn)
+        self.clicks_filename = clicks_fn
+        self.keys_filename = keys_fn
+        self.screenshot_filename = screen_fn
+        self.slog_filename = system_fn
         self.finale = finale
         self._pause_info = PauseInfo(self.mixed_parser)
         if self.finale is not None:
@@ -500,3 +502,45 @@ class LogInfo:
         ax.set_ylabel('# Clicks pressed')
         ax.set_title("Clicks progression graph")
         plt.show()
+
+    def mark_click(self, x, y, r=0, b=0, g=0):
+        """
+        @brief      Marks a pixel and neighbors in an image.
+        """
+        if x - 1 >= 0:
+            if y - 1 >= 0:
+                self.pixels[x-1, y-1] = (r, b, g)
+            self.pixels[x-1, y] = (r, b, g)
+            if y + 1 < self.img_height:
+                self.pixels[x-1, y+1] = (r, b, g)
+        if y - 1 >= 0:
+            self.pixels[x, y-1] = (r, b, g)
+        self.pixels[x, y] = (r, b, g)
+        if y + 1 < self.img_height:
+            self.pixels[x, y+1] = (r, b, g)
+        if x + 1 < self.img_width:
+            if y - 1 >= 0:
+                self.pixels[x+1, y-1] = (r, b, g)
+            self.pixels[x+1, y] = (r, b, g)
+            if y + 1 < self.img_height:
+                self.pixels[x+1, y+1] = (r, b, g)
+
+    def plot_clicks_in_screenshot(self, screenshot):
+        """
+        @brief      Marks in a screenshot where clicks were made.
+        
+        @param      screenshot  The screenshot path
+        """
+        img = Image.open(screenshot)
+        self.pixels = img.load()
+        self.img_width = img.width
+        self.img_height = img.height
+        # Get clicks (down only)
+        clicks = self.get_click_info()
+        # Define color
+        r, g, b = 40, 205, 106
+        # For each click, mark the surrounding area
+        for click in clicks:
+            _ , _, _, _, _, _, x, y = click
+            self.mark_click(int(x), int(y), r, g, b)
+        img.show()
