@@ -335,6 +335,13 @@ tmp = rwords[-1].split(".")
 # print tmp
 # rwords[-1], missing_changes = tmp[0], tmp[1]
 for i in range(len(rwords)):
-    if rwords[i] != fwords[i]:
-        print rwords[i], fwords[i]
+    print rwords[i], fwords[i]
 print rwords
+revision_changes = []
+for word in rwords[::-1]:
+	if "." in word:
+		revision_changes += word.split(".")[1:]
+		break
+	else:
+		revision_changes += [word]
+print revision_changes[::-1]
