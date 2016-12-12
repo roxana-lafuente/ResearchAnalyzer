@@ -34,7 +34,7 @@ from constants_analysis import *
 from math import sqrt
 from collections import defaultdict
 import matplotlib.pyplot as plt
-import Image
+import image
 
 # Get the absolute path to the test files in the directory variable
 from inspect import getsourcefile
