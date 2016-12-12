@@ -34,7 +34,7 @@ from constants_analysis import *
 from math import sqrt
 from collections import defaultdict
 import matplotlib.pyplot as plt
-from PIL import Image
+import Image
 
 # Get the absolute path to the test files in the directory variable
 from inspect import getsourcefile
@@ -528,7 +528,7 @@ class LogInfo:
     def plot_clicks_in_screenshot(self, screenshot):
         """
         @brief      Marks in a screenshot where clicks were made.
-        
+
         @param      screenshot  The screenshot path
         """
         img = Image.open(screenshot)
