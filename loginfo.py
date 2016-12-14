@@ -99,6 +99,46 @@ class LogInfo:
             pressed_clicks += [(x, y, res, click_type, msg, pn, title)]
         return pressed_clicks
 
+    def get_click_info_for_visualization(self):
+        """
+            Given a structure containing the parsed log, it creates a list of
+        tuples where each row contains the following information:
+            TYPE OF CLICK - TIME PRESS - RELEASE TIME - DATE-
+            PRESS MOUSE X - PRESS MOUSE Y - RELEASE MOUSE X - RELEASE MOUSE Y
+        """
+        # pn - program name
+        # wid - window_id
+        # x - coordinate x
+        # y - coordinate y
+        # ms - millisecond
+        # pt - press time
+        # rt - release time
+        # tt - total time
+        # dx - down x
+        # ux - up x
+        result = []  # List of tuples
+        pc = {}  # Pending_clicks
+        for click in self.clicks_parser.clicks:
+            date, time, pn, user, wid, title, ms, msg, x, y, res, img = click
+            ct, msg = msg.split('_')  # click_type and message
+            if msg == DOWN:
+                if ct not in pc:
+                    # Fills the list with the partial information.
+                    pc[ct] = [ct, [ms], None, None, [x], [y], None, None]
+                else:
+                    # More than one down.
+                    ct, pt, rt, tt, dx, dx, ux, ux = pc.pop(ct)
+                    pc[ct] = [ct, pt+[ms], None, None, dx+[x], dx+[y], None, None]
+            else:  # It's an UP msg
+                if ct not in pc:
+                    msg = "Ha ocurrido un error fatal. "
+                    msg += "El log no tiene el formato deseado."
+                    print msg
+                    exit(1)
+                else:
+                    ct, pt, rt, tt, dx, dy, ux, uy = pc.pop(ct)
+                    result += [(ct, pt, ms, date, dx, dy, x, y)]
+        return result
     def get_click_info(self):
         """
             Given a structure containing the parsed log, it creates a list of
