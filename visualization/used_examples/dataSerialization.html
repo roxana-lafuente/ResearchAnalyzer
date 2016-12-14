@@ -1,4 +1,47 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Timeline | Data serialization</title>
 
+  <style>
+    body, html {
+      font-family: arial, sans-serif;
+      font-size: 11pt;
+    }
+
+    textarea {
+      width: 800px;
+      height: 200px;
+    }
+
+    .buttons {
+      margin: 20px 0;
+    }
+
+    .buttons input {
+      padding: 10px;
+    }
+  </style>
+
+  <script src="../vis/dist/vis.js"></script>
+  <link href="../vis/dist/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
+  <script src="../vis/examples/googleAnalytics.js"></script>
+</head>
+<body>
+
+<h1>Serialization and deserialization</h1>
+
+<p>This example shows how to serialize and deserialize JSON data, and load this in the Timeline via a DataSet. Serialization and deserialization is needed when loading or saving data from a server.</p>
+
+<textarea id="data">
+[
+  {"id": 1, "content": "item 1", "start": "2014-01-01 01:00:00"},
+  {"id": 2, "content": "item 2", "start": "2014-01-01 02:00:00"},
+  {"id": 3, "content": "item 3", "start": "2014-01-01 03:00:00"},
+  {"id": 4, "content": "item 4", "start": "2014-01-01 04:00:00", "end": "2014-01-01 04:30:00"},
+  {"id": 5, "content": "item 5", "start": "2014-01-01 05:00:00", "type": "point"},
+  {"id": 6, "content": "item 6", "start": "2014-01-01 06:00:00"}
+]
 </textarea>
 
 <div class="buttons">
@@ -22,6 +65,13 @@
   var options = {
     editable: true
   };
+  var names = ['John', 'Alston', 'Lee', 'Grant'];
+  var groups = new vis.DataSet();
+  var groupCount = 2
+  for (var g = 0; g < groupCount; g++) {
+    groups.add({id: g, content: names[g]});
+  }
+
   var timeline = new vis.Timeline(container, items, options);
 
   function loadData () {
