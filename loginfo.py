@@ -228,6 +228,33 @@ class LogInfo:
             pressed_keys.remove('#')
         return pressed_keys
 
+    def get_clustered_keys(self, cluster_threshold_in_microseconds = 500):
+        data = []
+        for key_info in  self.get_all_pressed_keys():
+            if key_info[1] == 'down':#only deal with the down events
+                try:
+                    key_timestamp = int(key_info[2])
+                    key_timestamp = datetime.datetime.fromtimestamp(key_timestamp/1000.0)
+                    data.append((key_info[0], key_timestamp))
+                except ValueError: pass #maybe the log has no timestamp
+        # turn strings into datetimes
+        split_dt = datetime.timedelta(microseconds=cluster_threshold_in_microseconds)
+        dts = (d1[1]-d0[1] for d0, d1 in zip(data, data[1:]))
+        split_at = [i for i, dt in enumerate(dts, 1) if dt >= split_dt]
+        groups = [data[i:j] for i, j in zip([0]+split_at, split_at+[None])]
+
+        sentences = []
+        for group in groups:
+            sentence =  ''.join([ seq[0] for seq in group])
+            #remove the backspaces and the keys backspaced by them
+            while sentence.find('backspace') != -1:
+                index = sentence.find('backspace')
+                sentence = sentence[:index - 1] + sentence[index + len('backspace'):]
+            start_timestamp = str(group[0][1])
+            end_timestamp = str(group[len(group)-1][1])
+            sentences.append((sentence,start_timestamp,end_timestamp))
+        return sentences
+
     def get_all_pressed_keys(self):
         """
             Returns a list with all the keys that had been pressed with
