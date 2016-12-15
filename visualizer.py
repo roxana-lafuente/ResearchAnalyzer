@@ -17,7 +17,7 @@ li = LogInfo(path + "click_images/clickimagelogfile_zxysp.txt", # Your click dat
              path + "system_log/system_log_zxysp.txt") # Your system log data here
 
 stylized_group_names = {"left":"Left Clicks","right":"Right Clicks"}
-group_names = ["left", "right"]
+group_names = ["right", "left"]
 
 neccesary_clicks_information = []
 for id,clickinfo in  enumerate(li.get_click_info_for_visualization()):
