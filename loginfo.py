@@ -103,7 +103,7 @@ class LogInfo:
         """
             Given a structure containing the parsed log, it creates a list of
         tuples where each row contains the following information:
-            TYPE OF CLICK - TIME PRESS - RELEASE TIME - DATE-
+            TYPE OF CLICK - TIME PRESS - IMAGE NAME
             PRESS MOUSE X - PRESS MOUSE Y - RELEASE MOUSE X - RELEASE MOUSE Y
         """
         # pn - program name
@@ -137,7 +137,7 @@ class LogInfo:
                     exit(1)
                 else:
                     ct, pt, rt, tt, dx, dy, ux, uy = pc.pop(ct)
-                    result += [(ct, pt, ms, date, dx, dy, x, y)]
+                    result += [(ct, pt, img, dx, dy, x, y)]
         return result
     def get_click_info(self):
         """

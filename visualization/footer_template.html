@@ -2,11 +2,16 @@
 </textarea>
 
 <div class="buttons">
-  <input type="button" id="load" value="&darr; Load" title="Load data from textarea into the Timeline">
-  <input type="button" id="save" value="&uarr; Save" title="Save data from the Timeline into the textarea">
+  <input type="button" id="load" value="&darr; Load" title="Load data from textarea into the Timeline" style="display: none;">
+  <input type="button" id="save" value="&uarr; Save" title="Save data from the Timeline into the textarea" style="display: none;">
 </div>
 
+<div id="hoveredItem"></div>
+<div id="log"></div>
+
 <div id="visualization"></div>
+<p></p>
+<div id="images"></div>
 
 <script>
   var txtData = document.getElementById('data');
@@ -31,6 +36,28 @@
 
   var timeline = new vis.Timeline(container, items, options);
   timeline.setGroups(groups);
+
+  var click_screenshoot = new Image();
+  var div = document.getElementById('images');
+
+
+  timeline.on('itemover', function (properties) {
+    logEvent('itemover', properties);
+    click_screenshoot.src = items.get(properties.item).click_image
+    div.appendChild(click_screenshoot);
+  });
+
+  timeline.on('itemout', function (properties) {
+    logEvent('itemover', properties);
+    div.removeChild(click_screenshoot);
+  });
+
+  function logEvent(event, properties) {
+    var log = document.getElementById('log');
+    var msg = document.createElement('div');
+    msg.innerHTML = 'event=' + JSON.stringify(event) + ', ' +
+        'properties=' + JSON.stringify(properties);
+  }
 
   function loadData () {
     // get and deserialize the data
@@ -76,7 +103,7 @@
     });
 
     // serialize the data and put it in the textarea
-    txtData.value = JSON.stringify(data, null, 2);
+    //txtData.value = JSON.stringify(data, null, 2);
   }
   btnSave.onclick = saveData;
 

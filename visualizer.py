@@ -19,18 +19,19 @@ li = LogInfo(path + "click_images/clickimagelogfile_zxysp.txt", # Your click dat
 stylized_group_names = {"left":"Left Clicks","right":"Right Clicks"}
 group_names = ["left", "right"]
 
-print li.get_click_info_for_visualization()
-# Print clicks summary info.
 neccesary_clicks_information = []
 for id,clickinfo in  enumerate(li.get_click_info_for_visualization()):
-    start_relative_timestamp = float(clickinfo[1][0])
-    end_relative_timestamp = float(clickinfo[2])
-    date =  datetime.datetime.strptime(str(clickinfo[3]), "%Y%m%d").date()
-    timestamps_offset = float(date.strftime("%s")) * 1000
-    start_timestamp = str(datetime.datetime.fromtimestamp((start_relative_timestamp + timestamps_offset)/1000.0))
-    end_timestamp = str(datetime.datetime.fromtimestamp((end_relative_timestamp + timestamps_offset)/1000.0))
-    print start_timestamp
+
     click_type = clickinfo[0]
+
+    splitted_image_title = clickinfo[2].split('_')
+    start_relative_timestamp = float(clickinfo[1][0])
+    print splitted_image_title
+    date = datetime.datetime.strptime(splitted_image_title[0], "%Y%m%d").date()
+    hour = str(datetime.datetime.strptime(splitted_image_title[1], "%H%M%S")).split(' ')[1]
+    print date, hour
+    start_timestamp = str(date) + ' ' + hour
+    end_timestamp = start_timestamp
 
     neccesary_click_information = {}
     neccesary_click_information["id"] = id
@@ -39,6 +40,9 @@ for id,clickinfo in  enumerate(li.get_click_info_for_visualization()):
     neccesary_click_information["end"] = end_timestamp
     neccesary_click_information["group"] = group_names.index(click_type)
     neccesary_click_information["type"] = "box"
+    neccesary_click_information["click_image"] =  path + "click_images/" + clickinfo[2]
     neccesary_clicks_information.append(neccesary_click_information)
+
+
 inject_into_html(json.dumps(neccesary_clicks_information),stylized_group_names.values(),"clicks")
 webbrowser.open("visualization/clicks.html",new=2)
