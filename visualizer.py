@@ -37,7 +37,7 @@ class Visualizer():
 
             neccesary_click_information = {}
             neccesary_click_information["id"] = self.global_id
-            neccesary_click_information["content"] = "item " + str(self.global_id) #+ ' <span style="color:#97B0F8;">(' + names[id % 2] + ')</span>'
+            neccesary_click_information["content"] = ""
             neccesary_click_information["start"] = start_timestamp
             neccesary_click_information["end"] = end_timestamp
             neccesary_click_information["group"] = self.group_names.index(click_type)
@@ -69,7 +69,7 @@ class Visualizer():
 
             neccesary_sentence_information = {}
             neccesary_sentence_information["id"] = self.global_id
-            neccesary_sentence_information["content"] = ' <span style="color:#97B0F8;">(' + self.prepare_sentence_for_HTML(sentence_info[0]) + ')</span>'
+            neccesary_sentence_information["content"] = ' <span style="color:#97B0F8;">' + self.prepare_sentence_for_HTML(sentence_info[0]) + '</span>'
             neccesary_sentence_information["start"] = start_timestamp
             neccesary_sentence_information["end"] = end_timestamp
             neccesary_sentence_information["group"] = self.group_names.index(window_name)

@@ -229,9 +229,9 @@ class LogInfo:
             pressed_keys.remove('#')
         return pressed_keys
 
-    def get_clustered_keys(self, cluster_threshold_in_microseconds = 500):
+    def get_clustered_keys(self, cluster_threshold_in_microseconds = 10):
         '''
-        Given a reasonable threshold the keysare grouped together in clusters,
+        Given a reasonable threshold the keys are grouped together in clusters,
         forming sentences which can be visualized easily.
         '''
         data = []

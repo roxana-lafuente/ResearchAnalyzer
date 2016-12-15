@@ -60,9 +60,16 @@ class HTML_Injector:
         for id,content in enumerate(self.data.values()):
             if id != 0:
                 content = "," + content[1:]
-            if id != len(self.data.values())-1:
-                content = content [:-1]
+            #if id != len(self.data.values())-1:
+                #content = content [:-1]#remove all but the last bracket
+            content = content [:-1]#remove all right brackets
             contentHTML += content + "\n"
+        #placeholder until real phases info can be used
+        contentHTML+= ',{"id": "orange", "start": "2014-01-31", "end": "2019-02-02", "type": "background", "className": "orange"}'
+        contentHTML+= ',{"id": "brownish", "start": "2000-01-31", "end": "2014-01-31", "type": "background", "className": "brownish"}'
+        contentHTML+= ',{"id": "yellowish", "start": "1900-01-31", "end": "2000-01-31", "type": "background", "className": "yellowish"}'
+        contentHTML+= ',{"id": "aqua", "start": "1900-01-31", "end": "2000-01-31", "type": "background", "className": "aqua"}'
+        contentHTML+= ',{"id": "green", "start": "1850-01-31", "end": "1900-01-31", "type": "background", "className": "green"}]'
         self.save_contentHTML(contentHTML)
         #combine content with header and footer
         with open ("visualization/content.html", 'r') as f:
