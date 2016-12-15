@@ -240,7 +240,7 @@ class LogInfo:
                 try:
                     key_timestamp = int(key_info[2])
                     key_timestamp = datetime.datetime.fromtimestamp(key_timestamp/1000.0)
-                    data.append((key_info[0], key_timestamp))
+                    data.append((key_info[0], key_timestamp, key_info[3]))
                 except ValueError: pass #maybe the log has no timestamp
         # turn strings into datetimes
         split_dt = datetime.timedelta(microseconds=cluster_threshold_in_microseconds)
@@ -257,7 +257,8 @@ class LogInfo:
                 sentence = sentence[:index - 1] + sentence[index + len('backspace'):]
             start_timestamp = str(group[0][1])
             end_timestamp = str(group[len(group)-1][1])
-            sentences.append((sentence,start_timestamp,end_timestamp))
+            window_title = group[0][2]
+            sentences.append((sentence,start_timestamp,end_timestamp, window_title))
         return sentences
 
     def get_all_pressed_keys(self):
@@ -427,24 +428,6 @@ class LogInfo:
         Prints a summary on the pauses.
         """
         self._pause_info.print_pauses(begin, end)
-
-    def get_active_window_at_X_time(self, milliseconds):
-        '''
-        returns the title of the windows active at the given time
-        Like get_time_by_active_window, it iterates over self.mixed_parser
-        confidently that it is ordered, and so cool inferences can be performed.
-        In this case the iteration stops as soon as an active windows is found
-        to have a timestamp older than the given timestamp.
-        The iteration is performed backwards, starting from the newest.
-        '''
-        active_window_at_the_time = ""
-        for i in reversed(range(len(self.mixed_parser.keys)-1)):
-            # Get current keystroke.
-            cdate, ctime, cprogram_name, cusername, cwindow_id, cwindow_title, cmiliseconds, ckey, cmsg, cxcoord, cycoord = self.mixed_parser.keys[i]
-            if cmiliseconds <= milliseconds:
-                active_window_at_the_time = cprogram_name
-                break
-        return cprogram_name
 
     def get_time_by_active_window(self):
         """
