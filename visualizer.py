@@ -51,7 +51,7 @@ class Visualizer():
         index_of_return_word = sentence.find("return")
         is_return_preceded_by_whitespace = sentence[index_of_return_word-1:index_of_return_word] == " "
         if not is_return_preceded_by_whitespace:
-            sentence = sentence.replace("return","&#9166")
+            sentence = sentence.replace("return","&#9166;")
         return sentence
 
     def parse_and_inject_sentences_into_HTML(self):
