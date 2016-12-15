@@ -139,6 +139,7 @@ class LogInfo:
                     ct, pt, rt, tt, dx, dy, ux, uy = pc.pop(ct)
                     result += [(ct, pt, img, dx, dy, x, y)]
         return result
+
     def get_click_info(self):
         """
             Given a structure containing the parsed log, it creates a list of
@@ -229,6 +230,10 @@ class LogInfo:
         return pressed_keys
 
     def get_clustered_keys(self, cluster_threshold_in_microseconds = 500):
+        '''
+        Given a reasonable threshold the keysare grouped together in clusters,
+        forming sentences which can be visualized easily.
+        '''
         data = []
         for key_info in  self.get_all_pressed_keys():
             if key_info[1] == 'down':#only deal with the down events
@@ -423,9 +428,26 @@ class LogInfo:
         """
         self._pause_info.print_pauses(begin, end)
 
+    def get_active_window_at_X_time(self, milliseconds):
+        '''
+        returns the title of the windows active at the given time
+        Like get_time_by_active_window, it iterates over self.mixed_parser
+        confidently that it is ordered, and so cool inferences can be performed.
+        In this case the iteration stops as soon as an active windows is found
+        to have a timestamp older than the given timestamp.
+        The iteration is performed backwards, starting from the newest.
+        '''
+        active_window_at_the_time = ""
+        for i in reversed(range(len(self.mixed_parser.keys)-1)):
+            # Get current keystroke.
+            cdate, ctime, cprogram_name, cusername, cwindow_id, cwindow_title, cmiliseconds, ckey, cmsg, cxcoord, cycoord = self.mixed_parser.keys[i]
+            if cmiliseconds <= milliseconds:
+                active_window_at_the_time = cprogram_name
+                break
+        return cprogram_name
+
     def get_time_by_active_window(self):
         """
-        TODO: Change this comment so that it looks like the others
         By using the knowledge that immediately after a click or a key is down inside a program
         then that program is the active program, then the time between that event and the next
         can be assigned as time used inside that program, the active one.
