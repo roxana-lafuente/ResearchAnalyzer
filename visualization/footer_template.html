@@ -6,10 +6,8 @@
   <input type="button" id="save" value="&uarr; Save" title="Save data from the Timeline into the textarea" style="display: none;">
 </div>
 
-<div id="hoveredItem"></div>
 <div id="log"></div>
 
-  <div id="hoveredItem"></div>
 <div id="visualization">
   <div>
       <input type="button" id="Play" value="Play"/>
@@ -28,8 +26,8 @@
   </div>
 </div>
 <p></p>
+<div id="hoveredItem"></div>
 <div id="images"></div>
-
 <script>
   var txtData = document.getElementById('data');
   var btnLoad = document.getElementById('load');
@@ -120,26 +118,27 @@
           var start = range.start.valueOf()/1000;
           var end = range.end.valueOf()/1000;
           var middle = (start+end)/2
-          var start_middle = middle - 10;
-          var end_middle = middle + 10;
+          var start_middle = middle - 1;
+          var end_middle = middle + 1;
+          hoveredItem.innerHTML = ""
           //TODO OPTIMIZATION this iterates over all of the items, items could be segmented into clusters by time.
           var positiveBalance = items.get({
             filter: function (item) {
+              if(toTimestamp(item.start) > start_middle && toTimestamp(item.start) < end_middle)
+              {
+            hoveredItem.innerHTML += String(item.id);}
               return (toTimestamp(item.start) > start_middle && toTimestamp(item.start) < end_middle );
 
             }
           });
-          try{
+          if(positiveBalance.length > 0){
             timeline.setSelection(String(positiveBalance[0].id), {focus: focus.checked});
-            hoveredItem.innerHTML = String(positiveBalance[0].id);
             click_screenshoot.src = positiveBalance[0].click_image
             div.appendChild(click_screenshoot);
-          }
-          catch(err){
-            timeline.setSelection(String(positiveBalance[0].id), {focus: focus.checked});
+          }else{
+            timeline.setSelection("", {focus: focus.checked});
             div.removeChild(click_screenshoot);
           }
-
         }
   }, 1000);
 
