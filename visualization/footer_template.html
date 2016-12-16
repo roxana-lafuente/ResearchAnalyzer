@@ -1,160 +1,174 @@
+<!DOCTYPE html>
 
-</textarea>
+<html>
+<head>
+	<title>
+	</title>
+</head>
 
-<div class="buttons">
-  <input type="button" id="load" value="&darr; Load" title="Load data from textarea into the Timeline" style="display: none;">
-  <input type="button" id="save" value="&uarr; Save" title="Save data from the Timeline into the textarea" style="display: none;">
-</div>
-
-<div id="log"></div>
-
-<div id="visualization">
-  <div>
-      <input type="button" id="Play" value="Play"/>
-      <input type="button" id="Pause" value="Pause"/>
-  </div>
-  <p></p>
-  <div>
-        <input type="button" id="Backwards" value="<<"/>
-        <input type="button" id="x1" value="x1"/>
-        <input type="button" id="x2" value="x2"/>
-        <input type="button" id="x4" value="x4"/>
-        <input type="button" id="x8" value="x8"/>
-        <input type="button" id="x16" value="x16"/>
-        <input type="button" id="x32" value="x32"/>
-        <input type="button" id="x64" value="x64"/>
-        <input type="button" id="Forwards" value=">>"/>
-  </div>
-</div>
-<p></p>
-<div id="hoveredItem"></div>
-<div id="images"></div>
-<script>
-  var txtData = document.getElementById('data');
-  var btnLoad = document.getElementById('load');
-  var btnSave = document.getElementById('save');
-
-  // Create an empty DataSet.
-  // This DataSet is used for two way data binding with the Timeline.
-  var items = new vis.DataSet();
-  // create a timeline
-  var container = document.getElementById('visualization');
-  var options = {
-    start: '2016-08-11',
-    editable: false
-  };
-  <!--group names start here. Do not delete this comment.-->
-  var groups = new vis.DataSet();
-  var groupCount = names.length;
-  for (var g = 0; g < groupCount; g++) {
-    groups.add({id: g, content: names[g]});
-  }
-
-  var timeline = new vis.Timeline(container, items, options);
-  timeline.setGroups(groups);
-
-  var click_screenshoot = new Image();
-  var div = document.getElementById('images');
+<body>
+	<div class="buttons">
+		<input id="load" style="display: none;" title=
+		"Load data from textarea into the Timeline" type="button" value=
+		"&darr; Load"> <input id="save" style="display: none;" title=
+		"Save data from the Timeline into the textarea" type="button" value=
+		"&uarr; Save">
+	</div>
 
 
-  timeline.on('itemover', function (properties) {
-    click_screenshoot.src = items.get(properties.item).click_image
-    div.appendChild(click_screenshoot);
-  });
-
-  timeline.on('itemout', function (properties) {
-    div.removeChild(click_screenshoot);
-  });
+	<div id="log">
+	</div>
 
 
-  function loadData () {
-    // get and deserialize the data
-    var data = JSON.parse(txtData.value);
+	<div id="visualization">
+		<div>
+			<input id="Play" type="button" value="Play"> <input id="Pause" type="button"
+			value="Pause">
+		</div>
 
-    // update the data in the DataSet
-    //
-    // Note: when retrieving updated data from a server instead of a complete
-    // new set of data, one can simply update the existing data like:
-    //
-    //   items.update(data);
-    //
-    // Existing items will then be updated, and new items will be added.
-    items.clear();
-    items.add(data);
 
-    // adjust the timeline window such that we see the loaded data
-    timeline.fit();
-  }
+		<p>
+		</p>
 
-  // load the initial data
-  loadData();
-  var bMove = true;
-  var bBackwards = false;
-  var multiplier = 1;
-  var sign = 1;
 
-  function move (percentage) {
-      var range = timeline.getWindow();
-      var interval = range.end - range.start;
+		<div>
+			<input id="Backwards" type="button" value="&lt;&lt;"> <input id="x1" type=
+			"button" value="x1"> <input id="x2" type="button" value="x2"> <input id="x4"
+			type="button" value="x4"> <input id="x8" type="button" value="x8">
+			<input id="x16" type="button" value="x16"> <input id="x32" type="button"
+			value="x32"> <input id="x64" type="button" value="x64"> <input id="Forwards"
+			type="button" value="&gt;&gt;">
+		</div>
+	</div>
 
-      timeline.setWindow({
-          start: range.start.valueOf() + percentage * sign * multiplier,
-          end:   range.end.valueOf()   + percentage * sign * multiplier
-      });
-  }
-  function setHoveredItem(id) {
-       var hoveredItem = document.getElementById('hoveredItem');
-       hoveredItem.innerHTML += '|' + id;
-     }
 
-     function toTimestamp(strDate){
-      var datum = Date.parse(strDate);
-      return datum/1000;
-   }
+	<p>
+	</p>
 
-  setInterval(function(){
-          if (bMove){
-          move(+1000);
-          var range = timeline.getWindow();
-          var start = range.start.valueOf()/1000;
-          var end = range.end.valueOf()/1000;
-          var middle = (start+end)/2
-          var start_middle = middle - 1;
-          var end_middle = middle + 1;
-          hoveredItem.innerHTML = ""
-          //TODO OPTIMIZATION this iterates over all of the items, items could be segmented into clusters by time.
-          var positiveBalance = items.get({
-            filter: function (item) {
-              if(toTimestamp(item.start) > start_middle && toTimestamp(item.start) < end_middle)
-              {
-            hoveredItem.innerHTML += String(item.id);}
-              return (toTimestamp(item.start) > start_middle && toTimestamp(item.start) < end_middle );
 
-            }
-          });
-          if(positiveBalance.length > 0){
-            timeline.setSelection(String(positiveBalance[0].id), {focus: focus.checked});
-            click_screenshoot.src = positiveBalance[0].click_image
-            div.appendChild(click_screenshoot);
-          }else{
-            timeline.setSelection("", {focus: focus.checked});
-            div.removeChild(click_screenshoot);
-          }
-        }
-  }, 1000);
+	<div id="hoveredItem">
+	</div>
 
-  document.getElementById('Play').onclick  = function () { bMove = true;  };
-  document.getElementById('Pause').onclick = function () { bMove = false; };
-  document.getElementById('Backwards').onclick  = function () { sign = -1;};
-  document.getElementById('Forwards').onclick = function () { sign = 1; };
-  document.getElementById('x1').onclick  = function () { multiplier = 1;};
-  document.getElementById('x2').onclick  = function () { multiplier = 2;};
-  document.getElementById('x4').onclick  = function () { multiplier = 4;};
-  document.getElementById('x8').onclick  = function () { multiplier = 8;};
-  document.getElementById('x16').onclick  = function () { multiplier = 16;};
-  document.getElementById('x32').onclick  = function () { multiplier = 32;};
-  document.getElementById('x64').onclick  = function () { multiplier = 64;};
 
-</script>
+	<div id="images">
+	</div>
+	<script>
+	 var txtData = document.getElementById('data');
+	 var btnLoad = document.getElementById('load');
+	 var btnSave = document.getElementById('save');
+
+	 // Create an empty DataSet.
+	 // This DataSet is used for two way data binding with the Timeline.
+	 var items = new vis.DataSet();
+	 // create a timeline
+	 var container = document.getElementById('visualization');
+	 var options = {
+	   start: '2016-08-11',
+	   editable: false
+	 };
+	 <!--group names start here. Do not delete this comment.-->
+	 var groups = new vis.DataSet();
+	 var groupCount = names.length;
+	 for (var g = 0; g < groupCount; g++) {
+	   groups.add({id: g, content: names[g]});
+	 }
+
+	 var timeline = new vis.Timeline(container, items, options);
+	 timeline.setGroups(groups);
+
+	 var click_screenshoot = new Image();
+	 var div = document.getElementById('images');
+
+
+	 timeline.on('itemover', function (properties) {
+	   click_screenshoot.src = items.get(properties.item).click_image
+	   div.appendChild(click_screenshoot);
+	 });
+
+	 timeline.on('itemout', function (properties) {
+	   div.removeChild(click_screenshoot);
+	 });
+
+
+	 function loadData () {
+	   // get and deserialize the data
+	   var data = JSON.parse(txtData.value);
+
+	   // update the data in the DataSet
+	   //
+	   // Note: when retrieving updated data from a server instead of a complete
+	   // new set of data, one can simply update the existing data like:
+	   //
+	   //   items.update(data);
+	   //
+	   // Existing items will then be updated, and new items will be added.
+	   items.clear();
+	   items.add(data);
+
+	   // adjust the timeline window such that we see the loaded data
+	   timeline.fit();
+	 }
+
+	 // load the initial data
+	 loadData();
+	 var bMove = true;
+	 var bBackwards = false;
+	 var multiplier = 1;
+	 var sign = 1;
+
+	 function move (percentage) {
+	     var range = timeline.getWindow();
+	     var interval = range.end - range.start;
+
+	     timeline.setWindow({
+	         start: range.start.valueOf() + percentage * sign * multiplier,
+	         end:   range.end.valueOf()   + percentage * sign * multiplier
+	     });
+	 }
+
+	 function toTimestamp(strDate){
+	     var datum = Date.parse(strDate);
+	     return datum/1000;
+	  }
+
+	 setInterval(function(){
+	         if (bMove){
+	         move(+1000);
+	         var range = timeline.getWindow();
+	         var start = range.start.valueOf()/1000;
+	         var end = range.end.valueOf()/1000;
+	         var middle = (start+end)/2
+	         var start_middle = middle - 1;
+	         var end_middle = middle + 1;
+	         //TODO OPTIMIZATION this iterates over all of the items, items could be segmented into clusters by time.
+	         var positiveBalance = items.get({
+	           filter: function (item) {
+	               return (toTimestamp(item.start) > start_middle && toTimestamp(item.start) < end_middle );
+	           }
+	         });
+	         if(positiveBalance.length > 0){
+	           timeline.setSelection(String(positiveBalance[0].id), {focus: focus.checked});
+	           click_screenshoot.src = positiveBalance[0].click_image
+	           div.appendChild(click_screenshoot);
+	         }else{
+	           timeline.setSelection("", {focus: focus.checked});
+	           div.removeChild(click_screenshoot);
+	         }
+	       }
+	 }, 1000);
+
+	 document.getElementById('Play').onclick  = function () { bMove = true;  };
+	 document.getElementById('Pause').onclick = function () { bMove = false; };
+	 document.getElementById('Backwards').onclick  = function () { sign = -1;};
+	 document.getElementById('Forwards').onclick = function () { sign = 1; };
+	 document.getElementById('x1').onclick  = function () { multiplier = 1;};
+	 document.getElementById('x2').onclick  = function () { multiplier = 2;};
+	 document.getElementById('x4').onclick  = function () { multiplier = 4;};
+	 document.getElementById('x8').onclick  = function () { multiplier = 8;};
+	 document.getElementById('x16').onclick  = function () { multiplier = 16;};
+	 document.getElementById('x32').onclick  = function () { multiplier = 32;};
+	 document.getElementById('x64').onclick  = function () { multiplier = 64;};
+
+	</script>
 </body>
 </html>
