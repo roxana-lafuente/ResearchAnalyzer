@@ -11,9 +11,20 @@
 
   <div id="hoveredItem"></div>
 <div id="visualization">
-  <div class="menu">
+  <div>
       <input type="button" id="Play" value="Play"/>
       <input type="button" id="Pause" value="Pause"/>
+  </div>
+  <p></p>
+  <div>
+        <input type="button" id="Backwards" value="<<"/>
+        <input type="button" id="x2" value="x2"/>
+        <input type="button" id="x4" value="x4"/>
+        <input type="button" id="x8" value="x8"/>
+        <input type="button" id="x16" value="x16"/>
+        <input type="button" id="x32" value="x32"/>
+        <input type="button" id="x64" value="x64"/>
+        <input type="button" id="Forwards" value=">>"/>
   </div>
 </div>
 <p></p>
@@ -122,13 +133,17 @@
   // load the initial data
   loadData();
   var bMove = true;
+  var bBackwards = false;
+  var multiplier = 1;
+  var sign = 1;
+
   function move (percentage) {
       var range = timeline.getWindow();
       var interval = range.end - range.start;
 
       timeline.setWindow({
-          start: range.start.valueOf() + percentage,
-          end:   range.end.valueOf()   + percentage
+          start: range.start.valueOf() + percentage * sign * multiplier,
+          end:   range.end.valueOf()   + percentage * sign * multiplier
       });
   }
   function setHoveredItem(id) {
@@ -157,11 +172,18 @@
           click_screenshoot.src = positiveBalance[0].click_image
           div.appendChild(click_screenshoot);
         }
-      //code goes here that will be run every 5 seconds.
   }, 1000);
 
   document.getElementById('Play').onclick  = function () { bMove = true;  };
   document.getElementById('Pause').onclick = function () { bMove = false; };
+  document.getElementById('Backwards').onclick  = function () { sign = -1;};
+  document.getElementById('Forwards').onclick = function () { sign = 1; };
+  document.getElementById('x2').onclick  = function () { multiplier = 2;};
+  document.getElementById('x4').onclick  = function () { multiplier = 4;};
+  document.getElementById('x8').onclick  = function () { multiplier = 8;};
+  document.getElementById('x16').onclick  = function () { multiplier = 16;};
+  document.getElementById('x32').onclick  = function () { multiplier = 32;};
+  document.getElementById('x64').onclick  = function () { multiplier = 64;};
 
 </script>
 </body>
