@@ -86,35 +86,6 @@
     // adjust the timeline window such that we see the loaded data
     timeline.fit();
   }
-  btnLoad.onclick = loadData;
-
-  function saveData() {
-    // get the data from the DataSet
-    //
-    // Note that we specify the output type of the fields start and end
-    // as "ISODate", which is safely serializable. Other serializable types
-    // are "Number" (unix timestamp), "ASPDate" or "String" (without timezone!).
-    //
-    // Alternatively, it is possible to configure the DataSet to convert
-    // the output automatically to ISODates like:
-    //
-    //   var options = {
-    //     type: {start: 'ISODate', end: 'ISODate'}
-    //   };
-    //   var items = new vis.DataSet(options);
-    //   // now items.get() will automatically convert start and end to ISO dates.
-    //
-    var data = items.get({
-      type: {
-        start: 'ISODate',
-        end: 'ISODate'
-      }
-    });
-
-    // serialize the data and put it in the textarea
-    //txtData.value = JSON.stringify(data, null, 2);
-  }
-  btnSave.onclick = saveData;
 
   // load the initial data
   loadData();
