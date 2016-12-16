@@ -9,7 +9,13 @@
 <div id="hoveredItem"></div>
 <div id="log"></div>
 
-<div id="visualization"></div>
+  <div id="hoveredItem"></div>
+<div id="visualization">
+  <div class="menu">
+      <input type="button" id="Play" value="Play"/>
+      <input type="button" id="Pause" value="Pause"/>
+  </div>
+</div>
 <p></p>
 <div id="images"></div>
 
@@ -24,6 +30,7 @@
   // create a timeline
   var container = document.getElementById('visualization');
   var options = {
+    start: '2016-08-11',
     editable: false
   };
   <!--group names start here. Do not delete this comment.-->
@@ -42,6 +49,12 @@
 
   timeline.on('itemover', function (properties) {
     logEvent('itemover', properties);
+    click_screenshoot.src = items.get(properties.item).click_image
+    div.appendChild(click_screenshoot);
+  });
+  timeline.on('select', function (properties) {
+    setHoveredItem("pepe");
+    logEvent('select', properties);
     click_screenshoot.src = items.get(properties.item).click_image
     div.appendChild(click_screenshoot);
   });
@@ -108,6 +121,48 @@
 
   // load the initial data
   loadData();
+  var bMove = true;
+  function move (percentage) {
+      var range = timeline.getWindow();
+      var interval = range.end - range.start;
+
+      timeline.setWindow({
+          start: range.start.valueOf() + percentage,
+          end:   range.end.valueOf()   + percentage
+      });
+  }
+  function setHoveredItem(id) {
+       var hoveredItem = document.getElementById('hoveredItem');
+       hoveredItem.innerHTML += '|' + id;
+     }
+
+     function toTimestamp(strDate){
+      var datum = Date.parse(strDate);
+      return datum/1000;
+   }
+
+  setInterval(function(){
+          if (bMove){
+          move(+1000);
+          var range = timeline.getWindow();
+          var start = range.start.valueOf()/1000;
+          var end = range.end.valueOf()/1000;
+          var positiveBalance = items.get({
+            filter: function (item) {
+              return (toTimestamp(item.start) > start);
+
+            }
+          });
+          timeline.setSelection(String(positiveBalance[0].id), {focus: focus.checked});
+          click_screenshoot.src = positiveBalance[0].click_image
+          div.appendChild(click_screenshoot);
+        }
+      //code goes here that will be run every 5 seconds.
+  }, 1000);
+
+  document.getElementById('Play').onclick  = function () { bMove = true;  };
+  document.getElementById('Pause').onclick = function () { bMove = false; };
+
 </script>
 </body>
 </html>
