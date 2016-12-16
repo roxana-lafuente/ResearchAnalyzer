@@ -165,6 +165,7 @@
           var middle = (start+end)/2
           var start_middle = middle - 10;
           var end_middle = middle + 10;
+          //TODO OPTIMIZATION this iterates over all of the items, items could be segmented into clusters by time.
           var positiveBalance = items.get({
             filter: function (item) {
               return (toTimestamp(item.start) > start_middle && toTimestamp(item.start) < end_middle );
