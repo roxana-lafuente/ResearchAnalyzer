@@ -162,9 +162,12 @@
           var range = timeline.getWindow();
           var start = range.start.valueOf()/1000;
           var end = range.end.valueOf()/1000;
+          var middle = (start+end)/2
+          var start_middle = middle - 10;
+          var end_middle = middle + 10;
           var positiveBalance = items.get({
             filter: function (item) {
-              return (toTimestamp(item.start) > start);
+              return (toTimestamp(item.start) > start_middle && toTimestamp(item.start) < end_middle );
 
             }
           });
