@@ -4,31 +4,6 @@ class HTML_Injector:
         self.group_names = []
         self.data = {}
 
-    def combine_and_save_to_html(self,filename):
-        header = ""
-        footer = ""
-        content = ""
-        with open ("visualization/header.html", 'r') as f:
-            header = f.read()
-
-        with open ("visualization/footer.html", 'r') as f:
-            footer = f.read()
-
-        with open ("visualization/content.html", 'r') as f:
-            content = f.read()
-        filepath_complete = "visualization/" + filename + ".html"
-        text_file = open(filepath_complete, "w")
-        text_file.write(header)
-        text_file.write(content)
-        text_file.write(footer)
-        text_file.close()
-
-
-    def save_contentHTML(self,text):
-        text_file = open("visualization/content.html", "w")
-        text_file.write(text)
-        text_file.close()
-
     def add_at(self,at, to_add, contentHTML):
         starts_at = contentHTML.rfind(at)
         contentHTML = contentHTML[:starts_at] + to_add + contentHTML[starts_at:]
@@ -70,12 +45,10 @@ class HTML_Injector:
         contentHTML+= ',{"id": "yellowish", "start": "1900-01-31", "end": "2000-01-31", "type": "background", "className": "yellowish"}'
         contentHTML+= ',{"id": "aqua", "start": "1900-01-31", "end": "2000-01-31", "type": "background", "className": "aqua"}'
         contentHTML+= ',{"id": "green", "start": "1850-01-31", "end": "1900-01-31", "type": "background", "className": "green"}]'
-        self.save_contentHTML(contentHTML)
-        #combine content with header and footer
-        with open ("visualization/content.html", 'r') as f:
-            content = f.read()
-        filepath_complete = "visualization/" + filename + ".html"
-        text_file = open("visualization/footer.html", "w")
-        text_file.write(footer)
+    
+        with open ("visualization/orange_style.html", 'r') as f:
+            orange_style = f.read()
+        orange_style = self.add_at("<!--TIMELINE start here. ",'<textarea id="data" style="display: none;">' + contentHTML + footer, orange_style)
+        text_file = open("visualization/index.html", "w")
+        text_file.write(orange_style)
         text_file.close()
-        self.combine_and_save_to_html(filename)

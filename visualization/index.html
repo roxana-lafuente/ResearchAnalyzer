@@ -1,4 +1,58 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Timeline | Data serialization</title>
 
+  <style>
+    body, html {
+      font-family: arial, sans-serif;
+      font-size: 11pt;
+    }
+
+    .vis-item.vis-background.orange {
+        background-color: rgba(204, 111, 30, 0.90);
+    }
+
+    .vis-item.vis-background.brownish {
+        background-color: rgba(153,108,68, 0.90);
+    }
+    .vis-item.vis-background.yellowish {
+        background-color: rgba(255,247,97, 0.80);
+    }
+    .vis-item.vis-background.a {
+        background-color: rgba(75,255,136, 0.20);
+    }
+    .vis-item.vis-background.green {
+        background-color: rgba(30,204,40, 0.50);
+    }
+    textarea {
+      width: 800px;
+      height: 200px;
+    }
+
+    .buttons {
+      margin: 20px 0;
+    }
+
+    .buttons input {
+      padding: 10px;
+    }
+    #visualization {
+        position: relative;
+    }
+
+  </style>
+
+  <script src="../vis/dist/vis.js"></script>
+  <link href="../vis/dist/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
+  <script src="../vis/examples/googleAnalytics.js"></script>
+</head>
+<body>
+
+<textarea id="data" style="display: none;">
+[{"end": "2016-11-08 19:55:32", "content": "", "start": "2016-11-08 19:55:32", "click_image": "/home/migue/Desktop/ResearchAnalyzer/example_log/click_images/20161108_195532_502653_gnome-terminal_zxysp.png", "group": 1, "type": "box", "id": 1}, {"end": "2016-11-08 19:55:41", "content": "", "start": "2016-11-08 19:55:41", "click_image": "/home/migue/Desktop/ResearchAnalyzer/example_log/click_images/20161108_195541_754534___tk_filedialog_zxysp.png", "group": 1, "type": "box", "id": 2}, {"end": "2016-11-08 19:55:42", "content": "", "start": "2016-11-08 19:55:42", "click_image": "/home/migue/Desktop/ResearchAnalyzer/example_log/click_images/20161108_195542_384733__zxysp.png", "group": 1, "type": "box", "id": 3}, {"end": "2016-11-08 19:55:43", "content": "", "start": "2016-11-08 19:55:43", "click_image": "/home/migue/Desktop/ResearchAnalyzer/example_log/click_images/20161108_195543_132165_tk_zxysp.png", "group": 1, "type": "box", "id": 4}, {"end": "2016-11-08 19:57:18", "content": "", "start": "2016-11-08 19:57:18", "click_image": "/home/migue/Desktop/ResearchAnalyzer/example_log/click_images/20161108_195718_588611_tk_zxysp.png", "group": 1, "type": "box", "id": 5}, {"end": "2016-11-08 19:57:33", "content": "", "start": "2016-11-08 19:57:33", "click_image": "/home/migue/Desktop/ResearchAnalyzer/example_log/click_images/20161108_195733_341245_tk_zxysp.png", "group": 1, "type": "box", "id": 6}
+,{"end": "1970-01-01 06:30:56.728000", "content": " <span style=\"color:#97B0F8;\">username&#9166;</span>", "start": "1970-01-01 06:30:56.728000", "group": 2, "type": "box", "id": 7}, {"end": "1970-01-01 08:44:05.008000", "content": " <span style=\"color:#97B0F8;\">&#9166;</span>", "start": "1970-01-01 08:44:05.008000", "group": 3, "type": "box", "id": 8}
+,{"id": "orange", "start": "2014-01-31", "end": "2019-02-02", "type": "background", "className": "orange"},{"id": "brownish", "start": "2000-01-31", "end": "2014-01-31", "type": "background", "className": "brownish"},{"id": "yellowish", "start": "1900-01-31", "end": "2000-01-31", "type": "background", "className": "yellowish"},{"id": "aqua", "start": "1900-01-31", "end": "2000-01-31", "type": "background", "className": "aqua"},{"id": "green", "start": "1850-01-31", "end": "1900-01-31", "type": "background", "className": "green"}]
   </textarea>
 
 	<div id="visualization">
@@ -47,7 +101,7 @@
 	   start: '2016-08-11',
 	   editable: false
 	 };
-	 <!--group names start here. Do not delete this comment.-->
+	 var names = ['Right Clicks','Left Clicks','Sentences written in Enter Password','Sentences written in Enter Subject ID'];<!--group names start here. Do not delete this comment.-->
 	 var groups = new vis.DataSet();
 	 var groupCount = names.length;
 	 for (var g = 0; g < groupCount; g++) {
