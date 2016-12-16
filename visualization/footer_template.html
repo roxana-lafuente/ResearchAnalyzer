@@ -16,6 +16,7 @@
   <p></p>
   <div>
         <input type="button" id="Backwards" value="<<"/>
+        <input type="button" id="x1" value="x1"/>
         <input type="button" id="x2" value="x2"/>
         <input type="button" id="x4" value="x4"/>
         <input type="button" id="x8" value="x8"/>
@@ -146,6 +147,7 @@
   document.getElementById('Pause').onclick = function () { bMove = false; };
   document.getElementById('Backwards').onclick  = function () { sign = -1;};
   document.getElementById('Forwards').onclick = function () { sign = 1; };
+  document.getElementById('x1').onclick  = function () { multiplier = 1;};
   document.getElementById('x2').onclick  = function () { multiplier = 2;};
   document.getElementById('x4').onclick  = function () { multiplier = 4;};
   document.getElementById('x8').onclick  = function () { multiplier = 8;};
