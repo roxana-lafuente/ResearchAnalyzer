@@ -59,28 +59,14 @@
 
 
   timeline.on('itemover', function (properties) {
-    logEvent('itemover', properties);
-    click_screenshoot.src = items.get(properties.item).click_image
-    div.appendChild(click_screenshoot);
-  });
-  timeline.on('select', function (properties) {
-    setHoveredItem("pepe");
-    logEvent('select', properties);
     click_screenshoot.src = items.get(properties.item).click_image
     div.appendChild(click_screenshoot);
   });
 
   timeline.on('itemout', function (properties) {
-    logEvent('itemover', properties);
     div.removeChild(click_screenshoot);
   });
 
-  function logEvent(event, properties) {
-    var log = document.getElementById('log');
-    var msg = document.createElement('div');
-    msg.innerHTML = 'event=' + JSON.stringify(event) + ', ' +
-        'properties=' + JSON.stringify(properties);
-  }
 
   function loadData () {
     // get and deserialize the data
@@ -172,9 +158,17 @@
 
             }
           });
-          timeline.setSelection(String(positiveBalance[0].id), {focus: focus.checked});
-          click_screenshoot.src = positiveBalance[0].click_image
-          div.appendChild(click_screenshoot);
+          try{
+            timeline.setSelection(String(positiveBalance[0].id), {focus: focus.checked});
+            hoveredItem.innerHTML = String(positiveBalance[0].id);
+            click_screenshoot.src = positiveBalance[0].click_image
+            div.appendChild(click_screenshoot);
+          }
+          catch(err){
+            timeline.setSelection(String(positiveBalance[0].id), {focus: focus.checked});
+            div.removeChild(click_screenshoot);
+          }
+
         }
   }, 1000);
 
