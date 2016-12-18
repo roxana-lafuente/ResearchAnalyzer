@@ -3,6 +3,7 @@
 
 from constants import *
 
+
 class TextReconstructor:
 
     def __init__(self):
@@ -16,6 +17,23 @@ class TextReconstructor:
         self.is_ctrl_pressed = False
         self.is_alt_pressed = False
         self.is_bloqmayus_pressed = False
+
+    def replay_key_function(self, time, key, msg, delay=0):
+        """
+            Given a key, this function actually acts like the function of the
+            key.
+        """
+        # FIXME: self.textReconstructor.screen debería ser una lista de listas de strings (una matriz)
+        if(len(key) == 1):
+            # It's an ascii key.
+            if (self.is_shift_pressed or self.is_bloqmayus_pressed):
+                key = key.upper()
+            # We consider the key if it is being pressed (down).
+            self.append_to_screen(self.define_up_down_behaviour(msg, "", key))
+        else:
+            # It's a function key.
+    #            print "evaluating.." , "self.replay_" + str(key) + "(" + str(msg) + ")"
+            eval("self.replay_" + str(key) + "(msg)")
 
     def replay_altr(self, msg):
         if msg == KDOWN:
@@ -256,6 +274,12 @@ class TextReconstructor:
     def replay_supr(self, msg):
         if msg == KDOWN:
             self.screen = self.screen[0:self.ycursor]+self.screen[self.ycursor+1:len(self.screen)] #self.screen[len(self.screen) - 1]
+
+    def define_up_down_behaviour(self, msg, upb, downb):
+        if msg.endswith("down"):
+            return downb
+        else:
+            return upb
 
     def append_to_screen(self, msg):
         self.screen += msg

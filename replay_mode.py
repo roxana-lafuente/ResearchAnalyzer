@@ -8,13 +8,6 @@ from mixed_parser import Parser
 from text_reconstruction import TextReconstructor
 
 
-def define_up_down_behaviour(msg, upb, downb):
-    if msg.endswith("down"):
-        return downb
-    else:
-        return upb
-
-
 class ReplayMode:
 
     def __init__(self, keys_filename, clicks_filename, searchpattern=''):
@@ -29,31 +22,16 @@ class ReplayMode:
         print "self.textReconstructor.is_alt_pressed:", self.textReconstructor.is_alt_pressed
         print "self.textReconstructor.is_bloqmayus_pressed:", self.textReconstructor.is_bloqmayus_pressed
 
-    def replay_key_function(self, time, key, msg, delay=0):
-        """
-            Given a key, this function actually acts like the function of the
-            key.
-        """
-        # FIXME: self.textReconstructor.screen debería ser una lista de listas de strings (una matriz)
-        if(len(key) == 1):
-            # It's an ascii key.
-            if (self.textReconstructor.is_shift_pressed or self.textReconstructor.is_bloqmayus_pressed):
-                key = key.upper()
-            # We consider the key if it is being pressed (down).
-            self.textReconstructor.append_to_screen(define_up_down_behaviour(msg, "", key))
-        else:
-            # It's a function key.
-#            print "evaluating.." , "self.replay_" + str(key) + "(" + str(msg) + ")"
-            eval("self.textReconstructor.replay_" + str(key) + "(msg)")
+
 
     def replay_quick_mode(self):
         for k in self.parser.merged:
             try:
                 date, time, program_name, username, window_id, window_title, ms, key, msg, x, y = k
-                self.replay_key_function(ms, key, msg)
+                self.textReconstructor.replay_key_function(ms, key, msg)
             except ValueError:
                 date, real_time, program_name, username, window_id, window_title, ms, msg, x, y, resolution, img_name = k
-                self.replay_key_function(ms, msg.split("_")[0], msg)
+                self.textReconstructor.replay_key_function(ms, msg.split("_")[0], msg)
 
     def print_screen(self):
         print self.textReconstructor.screen
