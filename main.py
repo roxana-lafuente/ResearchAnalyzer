@@ -76,3 +76,4 @@ path = os.getcwd() + "/example_log/"
 
 ti = TextInfo(path + "example_log_target_text.txt")
 print ti.get_words_by_part_of_speech()
+print ti.get_sentences()

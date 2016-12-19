@@ -33,6 +33,7 @@ class TextInfo:
         """
         Initializes the needed parsers for the LogInfo class.
         """
+        self.finale = finale
         with open(finale, 'r') as f:
             self.raw = f.readlines()[-1].replace('\n', '')
             self.words = self.raw.split(LINE_SEPARATOR)
@@ -45,3 +46,10 @@ class TextInfo:
             grouped_by_part_of_speech_words[part_of_speech] += [word]
 
         return dict(grouped_by_part_of_speech_words)
+
+    def get_sentences(self):
+        sentences = []
+        sentences = self.raw.split(".")[:-1]
+        for i, sentence in enumerate(sentences):
+            sentences[i] = sentence.lstrip()
+        return sentences
