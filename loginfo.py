@@ -533,8 +533,7 @@ class LogInfo:
         """
         img = Image.open(screenshot)
         self.pixels = img.load()
-        self.img_width = img.width
-        self.img_height = img.height
+        self.img_width, self.img_height = img.size
         # Get clicks (down only)
         clicks = self.get_click_info()
         # Define color
