@@ -6,6 +6,8 @@ Open-source python API under GNU license for automation of ResearchLoggers' logs
 - Pauses
 - Translation phases (provided that some preconditions are fulfilled)
 
+Also it analyzes the final document, providing information on the final result.
+
 
 
 
@@ -15,19 +17,23 @@ Open-source python API under GNU license for automation of ResearchLoggers' logs
 ### Dependencies
 - termcolor [sudo apt-get install python-termcolor]
 - matplotlib
-- colous [pip install colour]
+- colour [pip install colour]
 - Python Image Library (PIL) [sudo apt-get install python-pil]
+- nltk [sudo pip install nltk]
+
+
+
+### Classes
+- The LogInfo object provides information on the data by using descriptive statistics. It must be instantiated by providing:
+    - A clicks log.
+    - A keystroke log.
+    - A system log.
+- The TextInfo object provides information on the final document. It must be instantiated by providing:
+    - The final document.
 
 
 
 ### Methods
-The LogInfo object provides information on the data by using descriptive statistics. It must be instantiated by providing:
-
-- A clicks log.
-- A keystroke log.
-- A system log.
-
-
 
 #### Clicks
 - **get_unique_pressed_clicks()**: Returns a set with all unique types of clicks used during the logging session.
@@ -112,6 +118,11 @@ The LogInfo object provides information on the data by using descriptive statist
          - Non significant pauses.
      - Mean pause time.
      - Pause time variance.
+
+
+
+#### Final document
+- **get_words_by_part_of_speech()**: Returns a dictionary, the key is a part of speech and the value is a list with all the words that were used that can be as that part of speech.
 
 
 
