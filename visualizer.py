@@ -25,12 +25,10 @@ class Visualizer():
                      self.path + "timed_screenshots/timedscreenshootlogfile_zxysp.txt", # Your timed screenshot log file here
                      self.path + "system_log/system_log_zxysp.txt") # Your system log data here
 
-
         self.injector = HTML_Injector()
         self.parse_and_inject_clicks_into_HTML()
         self.parse_and_inject_sentences_into_HTML()
         self.injector.injectIntoHTML()
-
 
         webbrowser.open("visualization/index.html",new=2)
 
@@ -59,31 +57,7 @@ class Visualizer():
             neccesary_click_information["type"] = "box"
             neccesary_click_information["click_image"] =  self.path + "click_images/" + clickinfo[2]
             neccesary_clicks_information.append(neccesary_click_information)
-
         self.injector.prepareForHTML(json.dumps(neccesary_clicks_information),stylized_group_names.values(),"clicks")
-
-    def replace_word_if_symbol(self,sentence, word, replacement):
-        '''
-        a word is considered a symbol if it has no whitespaces before it
-        '''
-        #TODO use a while loop to check the condition for each case
-        if not self.is_word_preceded_by_whitespace(sentence,word):
-            sentence = sentence.replace(word,replacement)
-            #TODO using this line instead of the current
-            #sentence = sentence.replace(word,replacement, 1)
-        return sentence
-
-    def is_word_preceded_by_whitespace(self,sentence, word):
-        index_of_word = sentence.find(word)
-        return sentence[index_of_word-1:index_of_word] == " "
-
-    def prepare_sentence_for_HTML(self, sentence):
-        self.textReconstructor = TextReconstructor()
-        for key in sentence:
-            #print key
-            self.textReconstructor.replay_key_function(key)
-        #print self.textReconstructor.screen
-        return self.textReconstructor.screen
 
     def parse_and_inject_sentences_into_HTML(self):
         neccesary_sentences_information = []
@@ -109,6 +83,4 @@ class Visualizer():
         self.injector.prepareForHTML(json.dumps(neccesary_sentences_information),stylized_group_names.values(),"sentences")
 
 if __name__ == "__main__":
-
-
     vis = Visualizer()
