@@ -1,35 +1,11 @@
 
   </textarea>
 
-	<div id="visualization">
-		<div>
-			<input id="Play" type="button" value="Play"> <input id="Pause" type="button"
-			value="Pause">
-		</div>
-
-
-		<p>
-		</p>
-
-
-		<div>
-			<input id="Backwards" type="button" value="&lt;&lt;"> <input id="x1" type=
-			"button" value="x1"> <input id="x2" type="button" value="x2"> <input id="x4"
-			type="button" value="x4"> <input id="x8" type="button" value="x8">
-			<input id="x16" type="button" value="x16"> <input id="x32" type="button"
-			value="x32"> <input id="x64" type="button" value="x64"> <input id="Forwards"
-			type="button" value="&gt;&gt;">
-		</div>
-	</div>
+	<div id="visualization"></div>
 
 
 	<p>
 	</p>
-
-
-	<div id="hoveredItem">
-	</div>
-
 
 	<div id="images">
 	</div>
@@ -44,7 +20,8 @@
 	 // create a timeline
 	 var container = document.getElementById('visualization');
 	 var options = {
-	   start: '2016-08-11',
+	   start: '2016-11-08',
+  	   end: '2016-11-09',
 	   editable: false
 	 };
 	 <!--group names start here. Do not delete this comment.-->
@@ -138,16 +115,5 @@
 	       }
 	 }, 1000);
 
-	 document.getElementById('Play').onclick  = function () { bMove = true;  };
-	 document.getElementById('Pause').onclick = function () { bMove = false; };
-	 document.getElementById('Backwards').onclick  = function () { sign = -1;};
-	 document.getElementById('Forwards').onclick = function () { sign = 1; };
-	 document.getElementById('x1').onclick  = function () { multiplier = 1;};
-	 document.getElementById('x2').onclick  = function () { multiplier = 2;};
-	 document.getElementById('x4').onclick  = function () { multiplier = 4;};
-	 document.getElementById('x8').onclick  = function () { multiplier = 8;};
-	 document.getElementById('x16').onclick  = function () { multiplier = 16;};
-	 document.getElementById('x32').onclick  = function () { multiplier = 32;};
-	 document.getElementById('x64').onclick  = function () { multiplier = 64;};
 
 	</script>
