@@ -187,6 +187,32 @@ class LogInfo:
         if '#' in pressed_keys:
             pressed_keys.remove('#')
         return pressed_keys
+        
+    def get__milliseconds_delta(self, milliseconds):
+        '''
+        By getting the minimum timestamp it is then possible
+        to infer the relation between the timestamps, where the first
+        timestamp will be zero and the other ones after it will
+        increase by the time passed in between.
+        '''
+        if not hasattr(self, 'first_milliseconds_timestamp'):
+            self.first_milliseconds_timestamp = \
+                int(min(min(self.mixed_parser.clicks, key=lambda x: x[6]),min(self.mixed_parser.keys, key=lambda x: x[6]))[6])
+        return milliseconds - self.first_milliseconds_timestamp
+
+    def get_date_from_mixedlog_format(self, click_or_key_log):
+        '''
+        By using the format from mixedlog, where
+        click_or_key_log[0] is the date in the format %Y%M, example 199912
+        click_or_key_log[1] is the hour/minute in the format %H%M, 1959
+        click_or_key_log[6] is the milliseconds that represent the uptime of the machine
+        it is possible to combine them into a complete date
+        '''
+        from_milliseconds = self.get__milliseconds_delta(int(click_or_key_log[6]))/1000.0
+        from_milliseconds = datetime.datetime.fromtimestamp(from_milliseconds).second
+        datehour = click_or_key_log[0] + ' ' +  click_or_key_log[1] + str(from_milliseconds)
+        date = datetime.datetime.strptime(datehour, "%Y%m%d %H%M%S")
+        return date
 
     def get_all_pressed_keys(self):
         """
