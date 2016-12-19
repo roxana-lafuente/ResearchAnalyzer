@@ -46,6 +46,8 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 sys.path.append(directory + "/ResearchLogger/PyKeylogger-1.2.1")
 from constants import *
+from text_reconstruction import TextReconstructor
+
 
 import codecs
 from colour import Color
@@ -68,6 +70,7 @@ class LogInfo:
         self.slog_filename = system_fn
         self.finale = finale
         self._pause_info = PauseInfo(self.mixed_parser)
+        self.textReconstructor = TextReconstructor()
         if self.finale is not None:
             # Phases analysis is only available if the finale file is given.
             try:
@@ -229,32 +232,67 @@ class LogInfo:
             pressed_keys.remove('#')
         return pressed_keys
 
-    def get_clustered_keys(self, cluster_threshold_in_microseconds = 10):
+    def get__milliseconds_delta(self, milliseconds):
+        '''
+        By getting the minimum timestamp it is then possible
+        to infer the relation between the timestamps, where the first
+        timestamp will be zero and the other ones after it will
+        increase by the time passed in between.
+        '''
+        if not hasattr(self, 'first_milliseconds_timestamp'):
+            self.first_milliseconds_timestamp = \
+                int(min(min(self.mixed_parser.clicks, key=lambda x: x[6]),min(self.mixed_parser.keys, key=lambda x: x[6]))[6])
+        return milliseconds - self.first_milliseconds_timestamp
+
+    def get_date_from_mixedlog_format(self, click_or_key_log):
+        '''
+        By using the format from mixedlog, where
+        click_or_key_log[0] is the date in the format %Y%M, example 199912
+        click_or_key_log[1] is the hour/minute in the format %H%M, 1959
+        click_or_key_log[6] is the milliseconds that represent the uptime of the machine
+        it is possible to combine them into a complete date
+        '''
+        from_milliseconds = self.get__milliseconds_delta(int(click_or_key_log[6]))/1000.0
+        from_milliseconds = datetime.datetime.fromtimestamp(from_milliseconds).second
+        datehour = click_or_key_log[0] + ' ' +  click_or_key_log[1] + str(from_milliseconds)
+        date = datetime.datetime.strptime(datehour, "%Y%m%d %H%M%S")
+        return date
+
+    def get_clustered_keys(self, cluster_threshold_in_microseconds = 5000000):
         '''
         Given a reasonable threshold the keys are grouped together in clusters,
         forming sentences which can be visualized easily.
         '''
         data = []
-        for key_info in  self.get_all_pressed_keys():
-            if key_info[1] == 'down':#only deal with the down events
-                try:
-                    key_timestamp = int(key_info[2])
-                    key_timestamp = datetime.datetime.fromtimestamp(key_timestamp/1000.0)
-                    data.append((key_info[0], key_timestamp, key_info[3]))
-                except ValueError: pass #maybe the log has no timestamp
-        # turn strings into datetimes
+        process_name_by_date = {}
+        for key_info in  self.mixed_parser.keys:
+
+            key = key_info[7]
+
+            msg = key_info[8]
+            #print key_info
+            date = self.get_date_from_mixedlog_format(key_info)
+            program_name = key_info[2]
+            process_name_by_date[date] = key_info[2]
+            data.append((key,date,program_name, msg))
+        for index,item in enumerate(data):
+            #feed the text reconstructor with data
+            self.textReconstructor.replay_key_function(item[0], item[1], item[3])
+        #get the reconstructed text and turn it into an array of keys
+        print self.textReconstructor.screen
+        data = []
+        for tup in self.textReconstructor.keys_and_time:
+            if tup[1]:
+                data.append((tup[0],tup[1],process_name_by_date[tup[1]]))
+        print ''.join([ seq[0] for seq in data])
+
         split_dt = datetime.timedelta(microseconds=cluster_threshold_in_microseconds)
         dts = (d1[1]-d0[1] for d0, d1 in zip(data, data[1:]))
         split_at = [i for i, dt in enumerate(dts, 1) if dt >= split_dt]
         groups = [data[i:j] for i, j in zip([0]+split_at, split_at+[None])]
-
         sentences = []
         for group in groups:
             sentence =  ''.join([ seq[0] for seq in group])
-            #remove the backspaces and the keys backspaced by them
-            while sentence.find('backspace') != -1:
-                index = sentence.find('backspace')
-                sentence = sentence[:index - 1] + sentence[index + len('backspace'):]
             start_timestamp = str(group[0][1])
             end_timestamp = str(group[len(group)-1][1])
             window_title = group[0][2]

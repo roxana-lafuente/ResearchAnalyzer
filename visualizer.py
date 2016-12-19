@@ -1,10 +1,11 @@
 from loginfo import LogInfo
 from html_injector import *
+from mixed_parser import *
 import os
 import json
 import datetime
 import webbrowser
-
+from text_reconstruction import TextReconstructor
 
 class Visualizer():
     def __init__(self):
@@ -12,10 +13,24 @@ class Visualizer():
         self.global_id = 0
         self.group_names = []
 
+        self.path = os.getcwd() + "/example_log/"
+        # Data from one subject.
+        # LogInfo needs: - Detailed log file path.
+        #                - Click images file path.
+        #                - Timed screenshot file path.
+        #                - System log file path.
+
+        self.li = LogInfo(self.path + "click_images/clickimagelogfile_zxysp.txt", # Your click data file here
+                     self.path + "detailed_log/detailedlogfile_zxysp.txt", # Your detailed log file here
+                     self.path + "timed_screenshots/timedscreenshootlogfile_zxysp.txt", # Your timed screenshot log file here
+                     self.path + "system_log/system_log_zxysp.txt") # Your system log data here
+
+
         self.injector = HTML_Injector()
         self.parse_and_inject_clicks_into_HTML()
         self.parse_and_inject_sentences_into_HTML()
         self.injector.injectIntoHTML()
+
 
         webbrowser.open("visualization/index.html",new=2)
 
@@ -24,7 +39,7 @@ class Visualizer():
         self.group_names.extend(["right", "left"])
 
         neccesary_clicks_information = []
-        for clickinfo in li.get_click_info_for_visualization():
+        for clickinfo in self.li.get_click_info_for_visualization():
             self.global_id += 1
 
             click_type = clickinfo[0]
@@ -42,22 +57,38 @@ class Visualizer():
             neccesary_click_information["end"] = end_timestamp
             neccesary_click_information["group"] = self.group_names.index(click_type)
             neccesary_click_information["type"] = "box"
-            neccesary_click_information["click_image"] =  path + "click_images/" + clickinfo[2]
+            neccesary_click_information["click_image"] =  self.path + "click_images/" + clickinfo[2]
             neccesary_clicks_information.append(neccesary_click_information)
 
         self.injector.prepareForHTML(json.dumps(neccesary_clicks_information),stylized_group_names.values(),"clicks")
 
-    def prepare_sentence_for_HTML(self, sentence):
-        index_of_return_word = sentence.find("return")
-        is_return_preceded_by_whitespace = sentence[index_of_return_word-1:index_of_return_word] == " "
-        if not is_return_preceded_by_whitespace:
-            sentence = sentence.replace("return","&#9166;")
+    def replace_word_if_symbol(self,sentence, word, replacement):
+        '''
+        a word is considered a symbol if it has no whitespaces before it
+        '''
+        #TODO use a while loop to check the condition for each case
+        if not self.is_word_preceded_by_whitespace(sentence,word):
+            sentence = sentence.replace(word,replacement)
+            #TODO using this line instead of the current
+            #sentence = sentence.replace(word,replacement, 1)
         return sentence
+
+    def is_word_preceded_by_whitespace(self,sentence, word):
+        index_of_word = sentence.find(word)
+        return sentence[index_of_word-1:index_of_word] == " "
+
+    def prepare_sentence_for_HTML(self, sentence):
+        self.textReconstructor = TextReconstructor()
+        for key in sentence:
+            #print key
+            self.textReconstructor.replay_key_function(key)
+        #print self.textReconstructor.screen
+        return self.textReconstructor.screen
 
     def parse_and_inject_sentences_into_HTML(self):
         neccesary_sentences_information = []
         stylized_group_names = {}
-        for sentence_info in  li.get_clustered_keys():
+        for sentence_info in  self.li.get_clustered_keys():
             self.global_id += 1
 
             start_timestamp = sentence_info[1]
@@ -69,7 +100,7 @@ class Visualizer():
 
             neccesary_sentence_information = {}
             neccesary_sentence_information["id"] = self.global_id
-            neccesary_sentence_information["content"] = ' <span style="color:#97B0F8;">' + self.prepare_sentence_for_HTML(sentence_info[0]) + '</span>'
+            neccesary_sentence_information["content"] = ' <span style="color:#97B0F8;">' + sentence_info[0] + '</span>'
             neccesary_sentence_information["start"] = start_timestamp
             neccesary_sentence_information["end"] = end_timestamp
             neccesary_sentence_information["group"] = self.group_names.index(window_name)
@@ -79,15 +110,5 @@ class Visualizer():
 
 if __name__ == "__main__":
 
-    path = os.getcwd() + "/example_log/"
-    # Data from one subject.
-    # LogInfo needs: - Detailed log file path.
-    #                - Click images file path.
-    #                - Timed screenshot file path.
-    #                - System log file path.
-    li = LogInfo(path + "click_images/clickimagelogfile_zxysp.txt", # Your click data file here
-                 path + "detailed_log/detailedlogfile_zxysp.txt", # Your detailed log file here
-                 path + "timed_screenshots/timedscreenshootlogfile_zxysp.txt", # Your timed screenshot log file here
-                 path + "system_log/system_log_zxysp.txt") # Your system log data here
+
     vis = Visualizer()
-    #print li.get_orientation_info()

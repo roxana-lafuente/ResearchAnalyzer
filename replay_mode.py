@@ -28,10 +28,10 @@ class ReplayMode:
         for k in self.parser.merged:
             try:
                 date, time, program_name, username, window_id, window_title, ms, key, msg, x, y = k
-                self.textReconstructor.replay_key_function(ms, key, msg)
+                self.textReconstructor.replay_key_function(key, msg, ms)
             except ValueError:
                 date, real_time, program_name, username, window_id, window_title, ms, msg, x, y, resolution, img_name = k
-                self.textReconstructor.replay_key_function(ms, msg.split("_")[0], msg)
+                self.textReconstructor.replay_key_function(msg.split("_")[0], msg, ms)
 
     def print_screen(self):
         print self.textReconstructor.screen
