@@ -140,7 +140,7 @@ class LogInfo:
                     exit(1)
                 else:
                     ct, pt, rt, tt, dx, dy, ux, uy = pc.pop(ct)
-                    result += [(ct, pt, img, dx, dy, x, y, pn)]
+                    result += [(ct, pt, img, dx, dy, x, y, pn + "|" + title)]
         return result
 
     def get_click_info(self):
@@ -271,9 +271,9 @@ class LogInfo:
 
             msg = key_info[8]
             date = self.get_date_from_mixedlog_format(key_info)
-            program_name = key_info[2]
-            process_name_by_date[date] = key_info[2]
-            data.append((key,date,program_name, msg))
+            name = key_info[2] + "|" + key_info[5]
+            process_name_by_date[date] = name
+            data.append((key,date,name, msg))
         for index,item in enumerate(data):
             #feed the text reconstructor with data
             self.textReconstructor.replay_key_function(item[0], item[1], item[3])
@@ -291,8 +291,8 @@ class LogInfo:
             sentence =  ''.join([ seq[0] for seq in group])
             start_timestamp = str(group[0][1])
             end_timestamp = str(group[len(group)-1][1])
-            window_title = group[0][2]
-            sentences.append((sentence,start_timestamp,end_timestamp, window_title))
+            name = group[0][2]
+            sentences.append((sentence,start_timestamp,end_timestamp, name))
         return sentences
 
     def get_all_pressed_keys(self):

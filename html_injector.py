@@ -2,7 +2,7 @@
 class HTML_Injector:
     def __init__(self):
         self.group_names = []
-        self.visualizations = [dict() for x in range(4)]
+        self.visualizations = [dict() for x in range(3)]
         self.vis_names = ["relaxed","normal","strict"]
 
     def add_at(self,at, to_add, contentHTML):

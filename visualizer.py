@@ -50,7 +50,7 @@ class Visualizer():
 
             if process_name not in self.group_names:
                 self.group_names.append(process_name)
-                stylized_group_names[process_name] = "Sentences written in " + process_name
+                stylized_group_names[process_name] = "" if process_name == "|"  else process_name
 
             splitted_image_title = clickinfo[2].split('_')
             date = datetime.datetime.strptime(splitted_image_title[0], "%Y%m%d").date()
@@ -75,7 +75,10 @@ class Visualizer():
     def parse_and_inject_sentences_into_HTML(self, clustering_option = "normal"):
         neccesary_sentences_information = []
         stylized_group_names = {}
-        for sentence_info in  self.li.get_clustered_keys(self.clustering_options[clustering_option]):
+
+        #TODO Find out why now self.li.get_clustered_keys returns the same sentences
+        #three times in the case of clustering_option == "normal"
+        for sentence_info in  set(self.li.get_clustered_keys(self.clustering_options[clustering_option])):
             self.global_id += 1
 
             start_timestamp = sentence_info[1]
@@ -83,7 +86,7 @@ class Visualizer():
             process_name = sentence_info[3]
             if process_name not in self.group_names:
                 self.group_names.append(process_name)
-                stylized_group_names[process_name] = "Sentences written in " + process_name
+                stylized_group_names[process_name] = "" if process_name == "|"  else process_name
 
             neccesary_sentence_information = {}
             neccesary_sentence_information["id"] = self.global_id
