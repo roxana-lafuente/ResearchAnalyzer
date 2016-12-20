@@ -78,7 +78,7 @@ class Visualizer():
 
         #TODO Find out why now self.li.get_clustered_keys returns the same sentences
         #three times in the case of clustering_option == "normal"
-        for sentence_info in  set(self.li.get_clustered_keys(self.clustering_options[clustering_option])):
+        for sentence_info in self.li.get_clustered_keys(self.clustering_options[clustering_option]):
             self.global_id += 1
 
             start_timestamp = sentence_info[1]

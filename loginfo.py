@@ -293,6 +293,7 @@ class LogInfo:
             end_timestamp = str(group[len(group)-1][1])
             name = group[0][2]
             sentences.append((sentence,start_timestamp,end_timestamp, name))
+        self.textReconstructor = TextReconstructor()
         return sentences
 
     def get_all_pressed_keys(self):
