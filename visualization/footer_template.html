@@ -1,14 +1,11 @@
 
   </textarea>
 
+
 	<div id="visualization"></div>
 
 
-	<p>
-	</p>
 
-	<div id="images">
-	</div>
 	<script>
 	 var txtData = document.getElementById('data');
 	 var btnLoad = document.getElementById('load');
@@ -35,16 +32,25 @@
 	 timeline.setGroups(groups);
 
 	 var click_screenshoot = new Image();
-	 var div = document.getElementById('images');
-
+	 var div2 = document.getElementById('images');
+   var user_is_browsing_the_images_mannually = false
 
 	 timeline.on('itemover', function (properties) {
-	   click_screenshoot.src = items.get(properties.item).click_image
-	   div.appendChild(click_screenshoot);
+     if (items.get(properties.item).content.indexOf("Click") !== -1){
+  	   click_screenshoot.src = items.get(properties.item).click_image
+  	   div2.appendChild(click_screenshoot);
+       user_is_browsing_the_images_mannually = true
+     }
 	 });
 
 	 timeline.on('itemout', function (properties) {
-	   div.removeChild(click_screenshoot);
+     if (items.get(properties.item).content.indexOf("Click") !== -1){
+       try{
+         <!--FIXME Eating exceptions is bad!.-->
+         div2.removeChild(click_screenshoot);
+         user_is_browsing_the_images_mannually = false
+       }catch(err){}
+     }
 	 });
 
 
@@ -107,10 +113,17 @@
 	         if(positiveBalance.length > 0){
 	           timeline.setSelection(String(positiveBalance[0].id), {focus: focus.checked});
 	           click_screenshoot.src = positiveBalance[0].click_image
-	           div.appendChild(click_screenshoot);
+             if (positiveBalance[0].content.indexOf("Click") !== -1){
+  	           div2.appendChild(click_screenshoot);
+             }
 	         }else{
-	           timeline.setSelection("", {focus: focus.checked});
-	           div.removeChild(click_screenshoot);
+             if (!user_is_browsing_the_images_mannually){
+  	           timeline.setSelection("", {focus: focus.checked});
+               try{
+                 <!--FIXME Eating exceptions is bad!.-->
+    	           div2.removeChild(click_screenshoot);
+               }catch(err){}
+             }
 	         }
 	       }
 	 }, 1000);

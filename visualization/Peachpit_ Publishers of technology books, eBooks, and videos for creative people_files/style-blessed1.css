@@ -11862,9 +11862,8 @@ div.anchorModule .listEpisodes.list-square li.video {
     color: #000
 }
 #tag {
-    max-width: 1000px;
+    max-width: 1140px;
     margin: 0 auto;
-    padding: .15em 0;
     display: block;
     font-family: Arial, Helvetica;
     font-weight: bold;
@@ -11878,7 +11877,7 @@ div.anchorModule .listEpisodes.list-square li.video {
     -moz-border-radius-topright: 15px;
     -webkit-border-top-right-radius: 15px;
     border-top-right-radius: 15px;
-    width: 1000px
+    width: 1140px
 }
 .r #tag {
     width: auto !important
@@ -11927,13 +11926,13 @@ h6,
 }
 #content {
     background-color: #fff;
-    width: 960px;
+    width: 1100px;
     margin: 0 auto;
     padding: 25px 20px 35px 20px;
     position: relative
 }
 .content {
-    max-width: 960px;
+    max-width: 1100px;
     background-color: #fff;
     padding: 25px 20px
 }
@@ -11974,8 +11973,8 @@ h6,
     border-right: 1px solid #d5d6d7
 }
 .homepage #column2 {
-    width: 230px;
-    float: left;
+    width: 365px;
+    float: right;
     padding-left: 20px
 }
 .homepage #column1a {
