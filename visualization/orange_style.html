@@ -175,6 +175,7 @@
 	<div class="wrapper">
 		<div id="tag">
 			<p>TIMELINE</p>
+
 		</div>
 		<script src="./Peachpit_%20Publishers%20of%20technology%20books,%20eBooks,%20and%20videos%20for%20creative%20people_files/jquery.flexslider-min.js" type="text/JavaScript">
 		</script>
@@ -232,82 +233,41 @@
 	<script src="http://tags.mediaforge.com/js/1724" type="text/javascript">
 	</script>
 
+
 	<div id="siteNav">
 		<div class="cranium">
 			<ul id="nav">
 				<li class="first">
-					<a class="arrow">Opciones de Velocidad &nbsp;</a>
+					<a class="arrow">Velocidad &nbsp;</a>
 
 					<ul>
-						<li>
-							<a onclick="multiplier = 1;">&#215;1</a>
-						</li>
-
-
-						<li>
-							<a onclick="multiplier = 2;">&#215;2</a>
-						</li>
-
-
-						<li>
-							<a onclick="multiplier = 4;">&#215;4</a>
-						</li>
-
-
-						<li>
-							<a onclick="multiplier = 8;">&#215;8</a>
-						</li>
-
-
-						<li>
-							<a onclick="multiplier = 16;">&#215;16</a>
-						</li>
-
-
-						<li>
-							<a onclick="multiplier = 32;">&#215;64</a>
-						</li>
-
-
-						<li>
-							<a onclick="multiplier = 64;">&#215;64</a>
-						</li>
-
-
-						<li>
-							<a onclick="multiplier = 128;">&#215;128</a>
-						</li>
-
-
-						<li>
-							<a onclick="multiplier = 256;">&#215;256</a>
-						</li>
+						<li><a onclick="multiplier = 1;">&#215;1</a></li>
+						<li><a onclick="multiplier = 2;">&#215;2</a></li>
+						<li><a onclick="multiplier = 4;">&#215;4</a></li>
+						<li><a onclick="multiplier = 8;">&#215;8</a></li>
+						<li><a onclick="multiplier = 16;">&#215;16</a></li>
+						<li><a onclick="multiplier = 32;">&#215;64</a></li>
+						<li><a onclick="multiplier = 64;">&#215;64</a></li>
+						<li><a onclick="multiplier = 128;">&#215;128</a></li>
+						<li><a onclick="multiplier = 256;">&#215;256</a></li>
 					</ul>
 				</li>
+				<li class="first">
+					<a class="arrow">Clustering &nbsp;</a>
 
-
-				<li>
-					<a onclick="sign = 1;">&#x3e;&#x3e;</a>
+					<ul>
+						<input type="range" id="clusteringRange" value="50"
+						oninput="setClusteringRange(this.value)" onchange="setClusteringRange(this.value)">
+					</ul>
 				</li>
-
-
-				<li>
-					<a onclick="sign = -1;">&#x3c;&#x3c;</a>
-				</li>
-
-
-				<li>
-					<a onclick="window.bMove = true;">Reproducir</a>
-				</li>
-
-
-				<li>
-					<a onclick="window.bMove = false;">Pausar</a>
-				</li>
+				<li><a onclick="sign = 1;">&#x3e;&#x3e;</a></li>
+				<li><a onclick="sign = -1;">&#x3c;&#x3c;</a></li>
+				<li><a onclick="window.bMove = true;">Reproducir</a></li>
+				<li><a onclick="window.bMove = false;">Pausar</a></li>
 			</ul>
+
 		</div>
 	</div>
-
 
 	<div id="strap">
 		<div class="cranium">

@@ -1,15 +1,12 @@
 
-  </textarea>
-
-
 	<div id="visualization"></div>
 
 
 
 	<script>
-	 var txtData = document.getElementById('data');
-	 var btnLoad = document.getElementById('load');
-	 var btnSave = document.getElementById('save');
+
+   var currentValue = "normal";
+	 var txtData = document.getElementById(currentValue);
 
 	 // Create an empty DataSet.
 	 // This DataSet is used for two way data binding with the Timeline.
@@ -127,6 +124,25 @@
 	         }
 	       }
 	 }, 1000);
+   function setClusteringRange(newVal){
+     var newValue = "";
+     if (newVal > 66){
+       newValue = "strict";
+     }
+     else if (newVal > 33){
+       newValue = "normal";
+     }
+     else{
+       newValue = "relaxed";
+     }
+     if (newValue != currentValue){
+      txtData = document.getElementById(newValue);
+      currentValue = newValue;
+      loadData();
+    }
+  }
+
+
 
 
 	</script>

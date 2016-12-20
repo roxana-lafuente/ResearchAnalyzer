@@ -14,7 +14,8 @@ class Visualizer():
         self.group_names = []
 
         self.content_style = "color: #7c795d;"
-
+        self.clustering_options = {"strict": 50000,"normal" : 5000000,"relaxed" : 500000000}
+        self.clustering_options_ordered = ["relaxed", "normal", "strict"]
         self.path = os.getcwd() + "/example_log/"
         # Data from one subject.
         # LogInfo needs: - Detailed log file path.
@@ -29,7 +30,8 @@ class Visualizer():
 
         self.injector = HTML_Injector()
         self.parse_and_inject_clicks_into_HTML()
-        self.parse_and_inject_sentences_into_HTML()
+        for clustering_option in self.clustering_options:
+            self.parse_and_inject_sentences_into_HTML(clustering_option)
         self.injector.injectIntoHTML()
 
         webbrowser.open("visualization/index.html",new=2)
@@ -64,12 +66,16 @@ class Visualizer():
             neccesary_click_information["type"] = "box"
             neccesary_click_information["click_image"] =  self.path + "click_images/" + clickinfo[2]
             neccesary_clicks_information.append(neccesary_click_information)
-        self.injector.prepareForHTML(json.dumps(neccesary_clicks_information),stylized_group_names.values(),"clicks")
 
-    def parse_and_inject_sentences_into_HTML(self):
+        #reuse the parsed clicks for all of the clustering options
+        for clustering_option in self.clustering_options:
+            vis_index = self.clustering_options_ordered.index(clustering_option)
+            self.injector.prepareForHTML(json.dumps(neccesary_clicks_information),stylized_group_names.values(),"clicks",vis_index)
+
+    def parse_and_inject_sentences_into_HTML(self, clustering_option = "normal"):
         neccesary_sentences_information = []
         stylized_group_names = {}
-        for sentence_info in  self.li.get_clustered_keys():
+        for sentence_info in  self.li.get_clustered_keys(self.clustering_options[clustering_option]):
             self.global_id += 1
 
             start_timestamp = sentence_info[1]
@@ -87,7 +93,9 @@ class Visualizer():
             neccesary_sentence_information["group"] = self.group_names.index(process_name)
             neccesary_sentence_information["type"] = "box"
             neccesary_sentences_information.append(neccesary_sentence_information)
-        self.injector.prepareForHTML(json.dumps(neccesary_sentences_information),stylized_group_names.values(),"sentences")
+
+        vis_index = self.clustering_options_ordered.index(clustering_option)
+        self.injector.prepareForHTML(json.dumps(neccesary_sentences_information),stylized_group_names.values(),"sentences",vis_index)
 
 if __name__ == "__main__":
     vis = Visualizer()
