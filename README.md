@@ -123,6 +123,9 @@ Also it analyzes the final document, providing information on the final result.
 
 #### Final document
 - **get_words_by_part_of_speech()**: Returns a dictionary, the key is a part of speech and the value is a list with all the words that were used that can be as that part of speech.
+- **get_sentences()**: Returns the sentences in the final document as a list of strings.
+- **get_n_most_frequent_words(n)**: Returns a list of strings containing the n most frequent words in the final document.
+- **plot_frequency_distribution(n)**: Plots the frequency distribution plot of the most common n words.
 
 
 
