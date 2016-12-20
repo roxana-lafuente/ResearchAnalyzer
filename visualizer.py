@@ -13,6 +13,9 @@ class Visualizer():
         self.global_id = 0
         self.group_names = []
 
+        self.content_style = "color: #7c795d;"
+        self.stylized_names = {"left":"Left Click", "right":"Right Click"}
+
         self.path = os.getcwd() + "/example_log/"
         # Data from one subject.
         # LogInfo needs: - Detailed log file path.
@@ -33,54 +36,55 @@ class Visualizer():
         webbrowser.open("visualization/index.html",new=2)
 
     def parse_and_inject_clicks_into_HTML(self):
-        stylized_group_names = {"left":"Left Clicks","right":"Right Clicks"}
-        self.group_names.extend(["right", "left"])
 
         neccesary_clicks_information = []
         for clickinfo in self.li.get_click_info_for_visualization():
             self.global_id += 1
 
             click_type = clickinfo[0]
+            process_name = clickinfo[7]
+
+            if process_name not in self.group_names:
+                self.group_names.append(process_name)
+                self.stylized_names[process_name] = "Sentences written in " + process_name
 
             splitted_image_title = clickinfo[2].split('_')
             date = datetime.datetime.strptime(splitted_image_title[0], "%Y%m%d").date()
             hour = str(datetime.datetime.strptime(splitted_image_title[1], "%H%M%S")).split(' ')[1]
             start_timestamp = str(date) + ' ' + hour
             end_timestamp = start_timestamp
-
             neccesary_click_information = {}
             neccesary_click_information["id"] = self.global_id
-            neccesary_click_information["content"] = ""
+            neccesary_click_information["content"] =  ' <span style="' + self.content_style + '">' + self.stylized_names[click_type] + '</span>'
             neccesary_click_information["start"] = start_timestamp
             neccesary_click_information["end"] = end_timestamp
-            neccesary_click_information["group"] = self.group_names.index(click_type)
+            neccesary_click_information["group"] = self.group_names.index(process_name)
             neccesary_click_information["type"] = "box"
             neccesary_click_information["click_image"] =  self.path + "click_images/" + clickinfo[2]
             neccesary_clicks_information.append(neccesary_click_information)
-        self.injector.prepareForHTML(json.dumps(neccesary_clicks_information),stylized_group_names.values(),"clicks")
+        self.injector.prepareForHTML(json.dumps(neccesary_clicks_information),self.stylized_names.values(),"clicks")
 
     def parse_and_inject_sentences_into_HTML(self):
         neccesary_sentences_information = []
-        stylized_group_names = {}
         for sentence_info in  self.li.get_clustered_keys():
             self.global_id += 1
 
             start_timestamp = sentence_info[1]
             end_timestamp = sentence_info[2]
-            window_name = sentence_info[3]
-            if window_name not in self.group_names:
-                self.group_names.append(window_name)
-                stylized_group_names[window_name] = "Sentences written in " + window_name
+            process_name = sentence_info[3]
+            if process_name not in self.group_names:
+                self.group_names.append(process_name)
+                self.stylized_names[process_name] = "Sentences written in " + process_name
 
             neccesary_sentence_information = {}
             neccesary_sentence_information["id"] = self.global_id
-            neccesary_sentence_information["content"] = ' <span style="color:#97B0F8;">' + sentence_info[0] + '</span>'
+            neccesary_sentence_information["content"] = ' <span style="' + self.content_style + '">' + sentence_info[0] + '</span>'
             neccesary_sentence_information["start"] = start_timestamp
             neccesary_sentence_information["end"] = end_timestamp
-            neccesary_sentence_information["group"] = self.group_names.index(window_name)
+            neccesary_sentence_information["group"] = self.group_names.index(process_name)
             neccesary_sentence_information["type"] = "box"
             neccesary_sentences_information.append(neccesary_sentence_information)
-        self.injector.prepareForHTML(json.dumps(neccesary_sentences_information),stylized_group_names.values(),"sentences")
+        self.injector.prepareForHTML(json.dumps(neccesary_sentences_information),self.stylized_names.values(),"sentences")
 
 if __name__ == "__main__":
     vis = Visualizer()

@@ -140,7 +140,7 @@ class LogInfo:
                     exit(1)
                 else:
                     ct, pt, rt, tt, dx, dy, ux, uy = pc.pop(ct)
-                    result += [(ct, pt, img, dx, dy, x, y)]
+                    result += [(ct, pt, img, dx, dy, x, y, pn)]
         return result
 
     def get_click_info(self):
@@ -270,7 +270,6 @@ class LogInfo:
             key = key_info[7]
 
             msg = key_info[8]
-            #print key_info
             date = self.get_date_from_mixedlog_format(key_info)
             program_name = key_info[2]
             process_name_by_date[date] = key_info[2]
@@ -279,13 +278,10 @@ class LogInfo:
             #feed the text reconstructor with data
             self.textReconstructor.replay_key_function(item[0], item[1], item[3])
         #get the reconstructed text and turn it into an array of keys
-        print self.textReconstructor.screen
         data = []
         for tup in self.textReconstructor.keys_and_time:
             if tup[1]:
                 data.append((tup[0],tup[1],process_name_by_date[tup[1]]))
-        print ''.join([ seq[0] for seq in data])
-
         split_dt = datetime.timedelta(microseconds=cluster_threshold_in_microseconds)
         dts = (d1[1]-d0[1] for d0, d1 in zip(data, data[1:]))
         split_at = [i for i, dt in enumerate(dts, 1) if dt >= split_dt]
