@@ -53,7 +53,7 @@ Also it analyzes the final document, providing information on the final result.
      - Click press time variance.
      - Click press time standard deviation.
 - **plot_clicks_in_screenshot()**: Marks in a screenshot where clicks were made.
-![Visualization of clicks in the screen session](/images/clicks_in_screen.png)
+![Visualization of clicks in the screen session](images/clicks_in_screen.png)
 
 
 #### Keystrokes
@@ -79,11 +79,11 @@ Also it analyzes the final document, providing information on the final result.
      - Unique key combos used.
 - **plot_keystroke_progression_graph(bin_size)**: It plots the amount of pressed down keys against time. Each of the bin size can be specified in seconds.
 
-![Keystroke progression graph](/images/keystroke_progression_graph.png)
+![Keystroke progression graph](images/keystroke_progression_graph.png)
 
 - **plot_clicks_progression_graph(bin_size)**: It plots the amount of pressed down clicks against time. Each of the bin size can be specified in seconds.
 
-![Clicks progression graph](/images/clicks_progression_graph.png)
+![Clicks progression graph](images/clicks_progression_graph.png)
 
 
 
@@ -91,7 +91,7 @@ Also it analyzes the final document, providing information on the final result.
 - **get_time_by_active_window()**: It returns a dictionary whose key is the name of a window used and its value is the time spent in it (in milliseconds). A special entry "total" contains the total session time.
 - **plot_window_distribution_pie_chart()**: Plots a pie chart of the times spent in each window in the session.
 
-![Window time distribution pie chart](/images/pie_chart_window_distribution.png)
+![Window time distribution pie chart](images/pie_chart_window_distribution.png)
 
 
 
@@ -126,6 +126,7 @@ Also it analyzes the final document, providing information on the final result.
 - **get_sentences()**: Returns the sentences in the final document as a list of strings.
 - **get_n_most_frequent_words(n)**: Returns a list of strings containing the n most frequent words in the final document.
 - **plot_frequency_distribution(n)**: Plots the frequency distribution plot of the most common n words.
+![n_most_frequent_words_plot](images/n_most_frequent_words_plot.png)
 
 
 
@@ -133,9 +134,9 @@ Also it analyzes the final document, providing information on the final result.
 An usage example of ResearchAnalyzer can be found in main.py; it uses the ResearchLogger's example log files on the "example_log" folder.
 
 The keystrokes summary looks like:
-![Keystrokes summary](/images/keys_summary.png)
+![Keystrokes summary](images/keys_summary.png)
 
 The clicks summary looks like:
-![Clicks summary](/images/clicks_summary.png)
+![Clicks summary](images/clicks_summary.png)
 
 **Note**: You need to collect your own data with ResearchLogger to analyze your own datasets.
