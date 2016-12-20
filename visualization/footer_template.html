@@ -5,7 +5,7 @@
 
 	<script>
 
-   var currentValue = "normal";
+   var currentValue = "vis_index5";
 	 var txtData = document.getElementById(currentValue);
 
 	 // Create an empty DataSet.
@@ -125,16 +125,8 @@
 	       }
 	 }, 1000);
    function setClusteringRange(newVal){
-     var newValue = "";
-     if (newVal > 66){
-       newValue = "strict";
-     }
-     else if (newVal > 33){
-       newValue = "normal";
-     }
-     else{
-       newValue = "relaxed";
-     }
+		 newVal = Math.floor(newVal/10);
+     var newValue = "vis_index".concat(parseInt(newVal));
      if (newValue != currentValue){
       txtData = document.getElementById(newValue);
       currentValue = newValue;

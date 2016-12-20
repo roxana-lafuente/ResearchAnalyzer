@@ -14,8 +14,9 @@ class Visualizer():
         self.group_names = []
 
         self.content_style = "color: #7c795d;"
-        self.clustering_options = {"strict": 50000,"normal" : 5000000,"relaxed" : 500000000}
-        self.clustering_options_ordered = ["relaxed", "normal", "strict"]
+        self.clustering_options = [((x * 5) ** 3)*200 for x in range(1, 11)]
+        print len(self.clustering_options)
+        print self.clustering_options
         self.path = os.getcwd() + "/example_log/"
         # Data from one subject.
         # LogInfo needs: - Detailed log file path.
@@ -35,6 +36,7 @@ class Visualizer():
         self.injector.injectIntoHTML()
 
         webbrowser.open("visualization/index.html",new=2)
+
 
     def parse_and_inject_clicks_into_HTML(self):
 
@@ -69,16 +71,14 @@ class Visualizer():
 
         #reuse the parsed clicks for all of the clustering options
         for clustering_option in self.clustering_options:
-            vis_index = self.clustering_options_ordered.index(clustering_option)
+            vis_index = self.clustering_options.index(clustering_option)
             self.injector.prepareForHTML(json.dumps(neccesary_clicks_information),stylized_group_names.values(),"clicks",vis_index)
 
-    def parse_and_inject_sentences_into_HTML(self, clustering_option = "normal"):
+    def parse_and_inject_sentences_into_HTML(self, clustering_option = 5000000):
         neccesary_sentences_information = []
         stylized_group_names = {}
 
-        #TODO Find out why now self.li.get_clustered_keys returns the same sentences
-        #three times in the case of clustering_option == "normal"
-        for sentence_info in self.li.get_clustered_keys(self.clustering_options[clustering_option]):
+        for sentence_info in self.li.get_clustered_keys(clustering_option):
             self.global_id += 1
 
             start_timestamp = sentence_info[1]
@@ -97,7 +97,7 @@ class Visualizer():
             neccesary_sentence_information["type"] = "box"
             neccesary_sentences_information.append(neccesary_sentence_information)
 
-        vis_index = self.clustering_options_ordered.index(clustering_option)
+        vis_index = self.clustering_options.index(clustering_option)
         self.injector.prepareForHTML(json.dumps(neccesary_sentences_information),stylized_group_names.values(),"sentences",vis_index)
 
 if __name__ == "__main__":

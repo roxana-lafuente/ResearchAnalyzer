@@ -2,8 +2,7 @@
 class HTML_Injector:
     def __init__(self):
         self.group_names = []
-        self.visualizations = [dict() for x in range(3)]
-        self.vis_names = ["relaxed","normal","strict"]
+        self.visualizations = [dict() for x in range(10)]
 
     def add_at(self,at, to_add, contentHTML):
         starts_at = contentHTML.rfind(at)
@@ -24,6 +23,7 @@ class HTML_Injector:
         for group_name in group_names:
             if group_name not in self.group_names:
                 self.group_names.append(group_name)
+        #print vis_index
         self.visualizations[vis_index][filename] = json
 
     def append_groups_to_content(self,contentHTML):
@@ -47,7 +47,7 @@ class HTML_Injector:
         contentHTML = ""
         for vis_index,visualization in enumerate(self.visualizations):
             if visualization:
-                contentHTML += '\n<textarea id="' + self.vis_names[vis_index] + '" style="display: none;">'
+                contentHTML += '\n<textarea id="vis_index' + str(vis_index) + '" style="display: none;">'
                 for id,content in enumerate(visualization.values()):
                     if id != 0: content = "," + content[1:]
                     #if id != len(self.visualizations.values())-1:
