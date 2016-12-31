@@ -8,15 +8,18 @@ import webbrowser
 from text_reconstruction import TextReconstructor
 
 class Visualizer():
-    def __init__(self):
+    def __init__(self, specific_index=-1):
+        self.specific_index = specific_index
+        self.show_all = True
+        if self.specific_index == -1: self.show_all = False
 
         self.global_id = 0
         self.group_names = []
+        self.log_classes = ["sentences", "clicks"]
 
         self.content_style = "color: #7c795d;"
         self.clustering_options = [((x * 5) ** 3)*200 for x in range(1, 11)]
-        print len(self.clustering_options)
-        print self.clustering_options
+        self.standard_cluster = self.clustering_options[int(len(self.clustering_options)/2)]
         self.path = os.getcwd() + "/example_log/"
         # Data from one subject.
         # LogInfo needs: - Detailed log file path.
@@ -30,75 +33,90 @@ class Visualizer():
                      self.path + "system_log/system_log_zxysp.txt") # Your system log data here
 
         self.injector = HTML_Injector()
-        self.parse_and_inject_clicks_into_HTML()
+        self.general_parse_into_HTML(self.log_classes.index("clicks"))
         for clustering_option in self.clustering_options:
-            self.parse_and_inject_sentences_into_HTML(clustering_option)
+            self.general_parse_into_HTML(self.log_classes.index("sentences"),clustering_option)
         self.injector.injectIntoHTML()
 
-        webbrowser.open("visualization/index.html",new=2)
+    def general_parse_into_HTML(self, clicks, clustering_option = 0):
 
+        if not clustering_option: clustering_option = self.standard_cluster
 
-    def parse_and_inject_clicks_into_HTML(self):
-
+        array_to_parse = []
         stylized_group_names = {}
-        stylized_click_names = {"left":"Left Click", "right":"Right"}
-
-        neccesary_clicks_information = []
-        for clickinfo in self.li.get_click_info_for_visualization():
+        stylized_click_names = {}
+        neccesary_information_array = []
+        if clicks:  stylized_click_names = {"left":"Left Click", "right":"Right"}
+        if clicks:  array_to_parse = self.li.get_click_info_for_visualization()
+        else:       array_to_parse = self.li.get_clustered_keys(clustering_option)
+        for index,info in enumerate(array_to_parse):
             self.global_id += 1
-
-            click_type = clickinfo[0]
-            process_name = clickinfo[7]
-
-            if process_name not in self.group_names:
-                self.group_names.append(process_name)
-                stylized_group_names[process_name] = "" if process_name == "|"  else process_name
-
-            splitted_image_title = clickinfo[2].split('_')
-            date = datetime.datetime.strptime(splitted_image_title[0], "%Y%m%d").date()
-            hour = str(datetime.datetime.strptime(splitted_image_title[1], "%H%M%S")).split(' ')[1]
-            start_timestamp = str(date) + ' ' + hour
-            end_timestamp = start_timestamp
-            neccesary_click_information = {}
-            neccesary_click_information["id"] = self.global_id
-            neccesary_click_information["content"] =  ' <span style="' + self.content_style + '">' + stylized_click_names[click_type] + '</span>'
-            neccesary_click_information["start"] = start_timestamp
-            neccesary_click_information["end"] = end_timestamp
-            neccesary_click_information["group"] = self.group_names.index(process_name)
-            neccesary_click_information["type"] = "box"
-            neccesary_click_information["click_image"] =  self.path + "click_images/" + clickinfo[2]
-            neccesary_clicks_information.append(neccesary_click_information)
-
-        #reuse the parsed clicks for all of the clustering options
-        for clustering_option in self.clustering_options:
+            if ((
+                self.specific_index != -1
+                and index >= self.specific_index - 2
+                and index <= self.specific_index + 2)
+                or self.specific_index == -1):
+                if clicks:  process_name = info[7]
+                else:       process_name = info[3]
+                if process_name not in self.group_names:
+                    self.group_names.append(process_name)
+                    stylized_group_names[process_name] = "" if process_name == "|"  else process_name
+                if clicks:
+                        neccesary_information = self.parse_click_info(info,stylized_click_names)
+                else:
+                        neccesary_information = self.parse_sentence_info(info)
+                neccesary_information_array.append(neccesary_information)
+        if clicks:
+            #reuse the parsed clicks for all of the clustering options
+            for clustering_option in self.clustering_options:
+                vis_index = self.clustering_options.index(clustering_option)
+                if neccesary_information_array:
+                    self.injector.prepareForHTML(json.dumps(neccesary_information_array),stylized_group_names.values(),"clicks",vis_index)
+        else:
             vis_index = self.clustering_options.index(clustering_option)
-            self.injector.prepareForHTML(json.dumps(neccesary_clicks_information),stylized_group_names.values(),"clicks",vis_index)
+            if neccesary_information_array:
+                self.injector.prepareForHTML(json.dumps(neccesary_information_array),stylized_group_names.values(),"sentences",vis_index)
 
-    def parse_and_inject_sentences_into_HTML(self, clustering_option = 5000000):
-        neccesary_sentences_information = []
-        stylized_group_names = {}
 
-        for sentence_info in self.li.get_clustered_keys(clustering_option):
-            self.global_id += 1
 
-            start_timestamp = sentence_info[1]
-            end_timestamp = sentence_info[2]
-            process_name = sentence_info[3]
-            if process_name not in self.group_names:
-                self.group_names.append(process_name)
-                stylized_group_names[process_name] = "" if process_name == "|"  else process_name
+    def parse_sentence_info(self,sentence_info):
+        start_timestamp = sentence_info[1]
+        end_timestamp = sentence_info[2]
+        process_name = sentence_info[3]
+        neccesary_sentence_information = {}
+        neccesary_sentence_information["id"] = self.global_id
+        neccesary_sentence_information["content"] = ' <span style="' + self.content_style + '">' + sentence_info[0] + '</span>'
+        neccesary_sentence_information["start"] = start_timestamp
+        neccesary_sentence_information["end"] = end_timestamp
+        neccesary_sentence_information["group"] = self.group_names.index(process_name)
+        neccesary_sentence_information["type"] = "box"
+        return neccesary_sentence_information
 
-            neccesary_sentence_information = {}
-            neccesary_sentence_information["id"] = self.global_id
-            neccesary_sentence_information["content"] = ' <span style="' + self.content_style + '">' + sentence_info[0] + '</span>'
-            neccesary_sentence_information["start"] = start_timestamp
-            neccesary_sentence_information["end"] = end_timestamp
-            neccesary_sentence_information["group"] = self.group_names.index(process_name)
-            neccesary_sentence_information["type"] = "box"
-            neccesary_sentences_information.append(neccesary_sentence_information)
 
-        vis_index = self.clustering_options.index(clustering_option)
-        self.injector.prepareForHTML(json.dumps(neccesary_sentences_information),stylized_group_names.values(),"sentences",vis_index)
+
+
+    def parse_click_info(self, click_info,stylized_click_names):
+        click_type = click_info[0]
+        process_name = click_info[7]
+
+        splitted_image_title = click_info[2].split('_')
+        date = datetime.datetime.strptime(splitted_image_title[0], "%Y%m%d").date()
+        hour = str(datetime.datetime.strptime(splitted_image_title[1], "%H%M%S")).split(' ')[1]
+        start_timestamp = str(date) + ' ' + hour
+        end_timestamp = start_timestamp
+        neccesary_click_information = {}
+        neccesary_click_information["id"] = self.global_id
+        neccesary_click_information["content"] =  ' <span style="' + self.content_style + '">' + stylized_click_names[click_type] + '</span>'
+        neccesary_click_information["start"] = start_timestamp
+        neccesary_click_information["end"] = end_timestamp
+        neccesary_click_information["group"] = self.group_names.index(process_name)
+        neccesary_click_information["type"] = "box"
+        neccesary_click_information["click_image"] =  self.path + "click_images/" + click_info[2]
+        return neccesary_click_information
+
 
 if __name__ == "__main__":
-    vis = Visualizer()
+    if len(sys.argv)==2:
+        vis = Visualizer(int(sys.argv[1]))
+    else:
+        vis = Visualizer()
