@@ -38,6 +38,7 @@ class ClickParser:
     """
         Class for parsing the click data from a session.
     """
+
     def __init__(self, clicks_filename, search_pattern=''):
         """
         - clicks_filename is the path of the logfile.
@@ -58,13 +59,15 @@ class ClickParser:
         f = open(self.clicks_filename, 'r')
         line = f.readline()
         while line != '' and line != '\n':
-            date, real_time, program_name, window_id, username, window_title, resolution, logged_clicks = line.split(ATTRIBUTE_SEPARATOR)
+            date, real_time, program_name, window_id, username, window_title, resolution, logged_clicks = line.split(
+                ATTRIBUTE_SEPARATOR)
             if title in window_title:
                 logged_clicks = logged_clicks.split(LINE_SEPARATOR)
                 # Withdraw last element since it is '\n'
                 logged_clicks = logged_clicks[:-1]
                 for logged_click in logged_clicks:
-                    xcoord, ycoord, miliseconds, msg, img_name = logged_click.split(DATA_SEPARATOR)
+                    xcoord, ycoord, miliseconds, msg, img_name = logged_click.split(
+                        DATA_SEPARATOR)
                     self.clicks += [(date, real_time, program_name, username,
                                      window_id, window_title, miliseconds, msg,
                                      xcoord, ycoord, resolution, img_name)]

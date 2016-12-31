@@ -79,7 +79,8 @@ class Parser(KeyParser, ClickParser):
         Prints the merged clicks and keys raw log in a readable way.
         """
         for time in sorted(self.uad):
-            type, date, clock_time, program, user, window_id, title, millisecond, key, msg, x, y = self.uad[time]
+            type, date, clock_time, program, user, window_id, title, millisecond, key, msg, x, y = self.uad[
+                time]
             print colored(key, 'red') + SEP + millisecond + SEP + msg + SEP + title + SEP + program
         SEP = ' - '
         return table

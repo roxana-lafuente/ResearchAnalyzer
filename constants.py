@@ -130,7 +130,7 @@ KMAP = {32L: "space",
         65377L: "screenshot",
         65379L: "insert",
         65383L: "click",
-        65385L: "cancel", # Cancel the load of a web page
+        65385L: "cancel",  # Cancel the load of a web page
         65407L: "bloq_num",
         65429L: "7",
         65430L: "4",
@@ -142,11 +142,11 @@ KMAP = {32L: "space",
         65436L: "1",
         65437L: "5",
         65438L: "0",
-        65439L: "period", # dot
-        65421L: "return", #\n
-        65450L: "asterisk", # *
-        65451L: "plus", # +
-        65453L: "minus", # dash
+        65439L: "period",  # dot
+        65421L: "return",  # \n
+        65450L: "asterisk",  # *
+        65451L: "plus",  # +
+        65453L: "minus",  # dash
         65455L: "slash",  # /
         65470L: "f1",
         65471L: "f2",
@@ -170,17 +170,17 @@ KMAP = {32L: "space",
         65516L: "windows",
         65535L: "supr",
         269025048L: "browser",
-        269025072L: "favorite", # Add a web page to favorites
-        269025139L: "f5", # Reload a web page
-        269025049L: "mail", # Opens the mail program by default
-        269025053L: "calc", # Opens the calculator
-        269025071L: "suspend", # Suspends the computer or hibernates?? #FIXME:
-        269025074L: "mplayer", # Opens the music player
-        269025045L: "stop", # Stops the sound if there's music playing
-        269025042L: "mute", # Mute all sounds
-        269025046L: "next", # Next track
-        269025047L: "previous", # Previous track
-        269025041L: "vdown", # Volumne down
-        269025043L: "vup", # Volumen up
-        269025044L: "play_pause" # Play and pause button
+        269025072L: "favorite",  # Add a web page to favorites
+        269025139L: "f5",  # Reload a web page
+        269025049L: "mail",  # Opens the mail program by default
+        269025053L: "calc",  # Opens the calculator
+        269025071L: "suspend",  # Suspends the computer or hibernates?? #FIXME:
+        269025074L: "mplayer",  # Opens the music player
+        269025045L: "stop",  # Stops the sound if there's music playing
+        269025042L: "mute",  # Mute all sounds
+        269025046L: "next",  # Next track
+        269025047L: "previous",  # Previous track
+        269025041L: "vdown",  # Volumne down
+        269025043L: "vup",  # Volumen up
+        269025044L: "play_pause"  # Play and pause button
         }

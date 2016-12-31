@@ -47,13 +47,15 @@ class PhaseInfo:
         # Revision (End)
         # try:
         system = open(self.slog_filename, 'r').read()
-        self.rostime = re.findall(r'[\S]* [\S]* [\S]* [\S]*       [\S]*      [\S]*    [\S]*    [\S]* [\S]* [\S]* [\S]*\n[\S]* [\S]* [\S]*\n[\S]* [\S]* [\S]* [\S]*\n[\S]* [\S]* [\S]*\n[\S]* [\S]*\n[\S]* [\S]*%s' % self.ostime, system)[0].split(",")[0]
+        self.rostime = re.findall(
+            r'[\S]* [\S]* [\S]* [\S]*       [\S]*      [\S]*    [\S]*    [\S]* [\S]* [\S]* [\S]*\n[\S]* [\S]* [\S]*\n[\S]* [\S]* [\S]* [\S]*\n[\S]* [\S]* [\S]*\n[\S]* [\S]*\n[\S]* [\S]*%s' % self.ostime, system)[0].split(",")[0]
         self.rretime = re.findall(r'END: [\S]*', system)[0].split(" ")[1]
         self.rostime = datetime.datetime.strptime(self.rostime, "%H:%M:%S")
         self.rretime = datetime.datetime.strptime(self.rretime, "%H%M%S")
         self.ttime = self.rretime - self.rostime
         self.ttime = str(self.ttime).split(":")
-        self.ftime = self.ostime + (int(self.ttime[1]) * 60 + int(self.ttime[2])) * 1000
+        self.ftime = self.ostime + \
+            (int(self.ttime[1]) * 60 + int(self.ttime[2])) * 1000
         self.ttime = (int(self.ttime[1]) * 60 + int(self.ttime[2])) * 1000
         self.retime = self.ftime - self.detime
         self.retime = self.ftime
@@ -64,7 +66,7 @@ class PhaseInfo:
 
         # Planning (End)
         self.oetime = int(self.keys[0][6])
-        self.otime = self.oetime-self.ostime
+        self.otime = self.oetime - self.ostime
 
         # Drafting (Start)
         self.dstime = self.oetime
@@ -82,16 +84,16 @@ class PhaseInfo:
         print "Tiempo de inicio:", colored(self.ostime, 'cyan')
         print "Tiempo de finalización:", colored(self.oetime, 'cyan')
         print "Duración:", colored(self.otime, 'cyan'), "ms =",
-        print colored(self.otime/float(1000), 'cyan'), "sec,"
+        print colored(self.otime / float(1000), 'cyan'), "sec,"
         try:
             print "Porcentaje de la sesión dedicado a la fase de orientación:",
-            print colored((self.otime/float(self.ttime))*100, 'cyan'), "%"
+            print colored((self.otime / float(self.ttime)) * 100, 'cyan'), "%"
         except NameError:
             # st - session time
             self.st = max(int(self.keys[-1][6]), int(self.openClicks[-1][6]))
             self.st -= int(self.openClicks[-2][6])
             print "Porcentaje de la sesión dedicado a la fase de orientación:",
-            print colored((self.otime/float(self.st))*100, 'cyan'), "%"
+            print colored((self.otime / float(self.st)) * 100, 'cyan'), "%"
 
     def print_drafting_info(self):
         """
@@ -101,17 +103,17 @@ class PhaseInfo:
         print "Tiempo de inicio:", colored(self.dstime, "cyan")
         print "Tiempo de finalización:", colored(self.detime, "cyan")
         print "Duración:", colored(self.dtime, "cyan"), "ms,",
-        print colored(self.dtime/float(1000), "cyan"), "sec,"
+        print colored(self.dtime / float(1000), "cyan"), "sec,"
         try:
             print "Porcentaje de la sesión dedicado a la fase de elaboración",
             print "de borrador:",
-            print colored((self.dtime/float(self.ttime))*100, 'cyan'), "%"
+            print colored((self.dtime / float(self.ttime)) * 100, 'cyan'), "%"
         except NameError:
             self.st = max(int(self.keys[-1][6]), int(self.openClicks[-1][6]))
             self.st -= int(self.openClicks[-2][6])
             print "Porcentaje de la sesión dedicado a la fase de elaboración",
             print "de borrador:",
-            print colored((self.dtime/float(self.stime))*100, "cyan"), "%"
+            print colored((self.dtime / float(self.stime)) * 100, "cyan"), "%"
 
     def print_revision_info(self):
         """
@@ -121,14 +123,14 @@ class PhaseInfo:
         print "Tiempo de inicio:", colored(self.rstime, "cyan")
         print "Tiempo de finalización:", colored(self.retime, 'cyan')
         print "Duración:", colored(self.rtime, 'cyan'), "ms, =",
-        print colored(self.rtime/float(1000), 'cyan'), "sec,"
+        print colored(self.rtime / float(1000), 'cyan'), "sec,"
         try:
             print "Porcentaje de la sesión dedicado a la fase de revisión:",
-            print colored((self.rtime/float(self.ttime))*100, 'cyan'), "%"
+            print colored((self.rtime / float(self.ttime)) * 100, 'cyan'), "%"
         except NameError:
             self.st = max(int(self.keys[-1][6]), int(self.openClicks[-1][6]))
             self.st -= int(self.openClicks[-2][6])
-            print (self.rtime/float(self.st))*100, "%"
+            print (self.rtime / float(self.st)) * 100, "%"
 
     def print_total_session_info(self):
         """
@@ -137,14 +139,14 @@ class PhaseInfo:
         print "*** SESIÓN ***"
         try:
             print "Tiempo total:", colored(self.ttime, 'cyan'), "ms =",
-            print colored(self.ttime/float(1000), 'cyan'), "sec =",
-            print colored(self.ttime/float(1000*60), 'cyan'), "min"
+            print colored(self.ttime / float(1000), 'cyan'), "sec =",
+            print colored(self.ttime / float(1000 * 60), 'cyan'), "min"
         except NameError:
             self.st = max(int(self.keys[-1][6]), int(self.openClicks[-1][6]))
             self.st -= int(self.openClicks[-2][6])
             print "Tiempo total:", colored(self.stime, "cyan"), "ms =",
-            print colored(self.stime/float(1000), 'cyan'), "sec =",
-            print colored(self.stime/float(1000*60), 'cyan'), "min"
+            print colored(self.stime / float(1000), 'cyan'), "sec =",
+            print colored(self.stime / float(1000 * 60), 'cyan'), "min"
 
     def get_orientation_info(self):
         """

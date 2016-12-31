@@ -65,6 +65,7 @@ def convert_to_hex(s):
         r = r[:2] + r[1] + r[2:3] + r[2] + r[3:] + r[3]
     return r
 
+
 def clear():
     for i in range(10):
         print

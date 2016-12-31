@@ -29,10 +29,11 @@ path = os.getcwd() + "/example_log/"
 #                - Click images file path.
 #                - Timed screenshot file path.
 #                - System log file path.
-li = LogInfo(path + "click_images/clickimagelogfile_zxysp.txt", # Your click data file here
-             path + "detailed_log/detailedlogfile_zxysp.txt", # Your detailed log file here
-             path + "timed_screenshots/timedscreenshootlogfile_zxysp.txt", # Your timed screenshot log file here
-             path + "system_log/system_log_zxysp.txt") # Your system log data here
+li = LogInfo(path + "click_images/clickimagelogfile_zxysp.txt",  # Your click data file here
+             path + "detailed_log/detailedlogfile_zxysp.txt",  # Your detailed log file here
+             # Your timed screenshot log file here
+             path + "timed_screenshots/timedscreenshootlogfile_zxysp.txt",
+             path + "system_log/system_log_zxysp.txt")  # Your system log data here
 # Print clicks summary info.
 print "Unique pressed clicks:", li.get_unique_pressed_clicks()
 print
@@ -71,4 +72,5 @@ li.plot_window_distribution_pie_chart()
 li.print_pauses(0, 5000000)
 li.print_pause_summary(0, 5000000)
 
-li.plot_clicks_in_screenshot(path + "timed_screenshots/20161108_195732_460991_screenshot.png")
+li.plot_clicks_in_screenshot(
+    path + "timed_screenshots/20161108_195732_460991_screenshot.png")

@@ -22,8 +22,6 @@ class ReplayMode:
         print "self.textReconstructor.is_alt_pressed:", self.textReconstructor.is_alt_pressed
         print "self.textReconstructor.is_bloqmayus_pressed:", self.textReconstructor.is_bloqmayus_pressed
 
-
-
     def replay_quick_mode(self):
         for k in self.parser.merged:
             try:
@@ -31,7 +29,8 @@ class ReplayMode:
                 self.textReconstructor.replay_key_function(key, msg, ms)
             except ValueError:
                 date, real_time, program_name, username, window_id, window_title, ms, msg, x, y, resolution, img_name = k
-                self.textReconstructor.replay_key_function(msg.split("_")[0], msg, ms)
+                self.textReconstructor.replay_key_function(
+                    msg.split("_")[0], msg, ms)
 
     def print_screen(self):
         print self.textReconstructor.screen
@@ -66,9 +65,9 @@ for i in range(len(rwords)):
 print rwords
 revision_changes = []
 for word in rwords[::-1]:
-	if "." in word:
-		revision_changes += word.split(".")[1:]
-		break
-	else:
-		revision_changes += [word]
+    if "." in word:
+        revision_changes += word.split(".")[1:]
+        break
+    else:
+        revision_changes += [word]
 print revision_changes[::-1]

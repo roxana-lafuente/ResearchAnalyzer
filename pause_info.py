@@ -5,6 +5,7 @@ class PauseInfo:
     """
     Class that shows summaries on pauses from a given log.
     """
+
     def __init__(self, mixed_parser):
         """
         Defines the needed times pauses for the PauseInfo class.
@@ -42,13 +43,16 @@ class PauseInfo:
         started.
         """
         pauses = []
-        for i in range(len(self._mixed_parser.keys)-1):
+        for i in range(len(self._mixed_parser.keys) - 1):
             # Get current keystroke.
-            cdate, ctime, cprogram_name, cusername, cwindow_id, cwindow_title, cmiliseconds, ckey, cmsg, cxcoord, cycoord = self._mixed_parser.keys[i]
+            cdate, ctime, cprogram_name, cusername, cwindow_id, cwindow_title, cmiliseconds, ckey, cmsg, cxcoord, cycoord = self._mixed_parser.keys[
+                i]
             # Get next keystroke.
-            ndate, ntime, nprogram_name, nusername, nwindow_id, nwindow_title, nmiliseconds, nkey, nmsg, nxcoord, nycoord = self._mixed_parser.keys[i+1]
+            ndate, ntime, nprogram_name, nusername, nwindow_id, nwindow_title, nmiliseconds, nkey, nmsg, nxcoord, nycoord = self._mixed_parser.keys[
+                i + 1]
             if begin <= min(int(nmiliseconds), int(cmiliseconds)) and max(int(nmiliseconds), int(cmiliseconds)) <= end:
-                pauses += [(int(cmiliseconds), int(nmiliseconds)-int(cmiliseconds))]
+                pauses += [(int(cmiliseconds),
+                            int(nmiliseconds) - int(cmiliseconds))]
         return pauses
 
     def print_pauses(self, begin, end):
@@ -82,15 +86,16 @@ class PauseInfo:
             medium_pauses += self._is_medium_pause(duration)
             big_pauses += self._is_big_pause(duration)
         # Calculates the variance.
-        esp_pauses = sum_pauses/float(len(pauses))
-        var_pauses = (1/float(len(pauses)) * var_pauses) - (esp_pauses * esp_pauses)
-        other_pauses = len(pauses)-short_pauses-medium_pauses-big_pauses
+        esp_pauses = sum_pauses / float(len(pauses))
+        var_pauses = (1 / float(len(pauses)) * var_pauses) - \
+            (esp_pauses * esp_pauses)
+        other_pauses = len(pauses) - short_pauses - medium_pauses - big_pauses
         # Print results.
         print "*** RESUMEN DE PAUSAS ***"
         print "Cantidad total de pausas en el intervalo [", begin, "ms ,", end, "ms ]:", colored(len(pauses), "blue")
-        print "Cantidad de pausas cortas:", colored(short_pauses, "blue"), "-", colored(short_pauses/float(len(pauses)), "cyan"), "%"
-        print "Cantidad de pausas medianas:", colored(medium_pauses, "blue"), "-", colored(medium_pauses/float(len(pauses)), "cyan"), "%"
-        print "Cantidad de pausas largas:", colored(big_pauses, "blue"), "-", colored(big_pauses/float(len(pauses)), "cyan"), "%"
-        print "Cantidad de pausas no significativas:", colored(other_pauses, "blue"), "-", colored(other_pauses/float(len(pauses)), "cyan"), "%"
+        print "Cantidad de pausas cortas:", colored(short_pauses, "blue"), "-", colored(short_pauses / float(len(pauses)), "cyan"), "%"
+        print "Cantidad de pausas medianas:", colored(medium_pauses, "blue"), "-", colored(medium_pauses / float(len(pauses)), "cyan"), "%"
+        print "Cantidad de pausas largas:", colored(big_pauses, "blue"), "-", colored(big_pauses / float(len(pauses)), "cyan"), "%"
+        print "Cantidad de pausas no significativas:", colored(other_pauses, "blue"), "-", colored(other_pauses / float(len(pauses)), "cyan"), "%"
         print "Tiempo de pausa promedio:", colored(esp_pauses, "blue")
         print "Varianza en el tiempo de las pausas:", colored(var_pauses, "blue")

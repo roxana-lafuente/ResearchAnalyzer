@@ -57,6 +57,7 @@ class LogInfo:
     """
     Presents the user with different types of summaries of the recorded logs.
     """
+
     def __init__(self, clicks_fn, keys_fn, screen_fn, system_fn, finale=None):
         """
         Initializes the needed parsers for the LogInfo class.
@@ -131,7 +132,8 @@ class LogInfo:
                 else:
                     # More than one down.
                     ct, pt, rt, tt, dx, dx, ux, ux = pc.pop(ct)
-                    pc[ct] = [ct, pt+[ms], None, None, dx+[x], dx+[y], None, None]
+                    pc[ct] = [ct, pt + [ms], None, None,
+                              dx + [x], dx + [y], None, None]
             else:  # It's an UP msg
                 if ct not in pc:
                     msg = "Ha ocurrido un error fatal. "
@@ -172,7 +174,8 @@ class LogInfo:
                 else:
                     # More than one down.
                     ct, pt, rt, tt, dx, dx, ux, ux = pc.pop(ct)
-                    pc[ct] = [ct, pt+[ms], None, None, dx+[x], dx+[y], None, None]
+                    pc[ct] = [ct, pt + [ms], None, None,
+                              dx + [x], dx + [y], None, None]
             else:  # It's an UP msg
                 if ct not in pc:
                     msg = "Ha ocurrido un error fatal. "
@@ -181,7 +184,8 @@ class LogInfo:
                     exit(1)
                 else:
                     ct, pt, rt, tt, dx, dy, ux, uy = pc.pop(ct)
-                    result += [(ct, pt, ms, int(ms)-int(pt[0]), dx, dy, x, y)]
+                    result += [(ct, pt, ms, int(ms) -
+                                int(pt[0]), dx, dy, x, y)]
         return result
 
     def print_click_summary(self):
@@ -205,7 +209,7 @@ class LogInfo:
             var += tt * tt
             print tt
         esp = esp / float(click_amount)
-        var = (var/float(click_amount))-(esp*esp)
+        var = (var / float(click_amount)) - (esp * esp)
         # Prints results.
         print "*** RESUMEN DE CLICKS ***"
         print "Cantidad total de clicks:", colored(click_amount, 'blue')
@@ -241,7 +245,8 @@ class LogInfo:
         '''
         if not hasattr(self, 'first_milliseconds_timestamp'):
             self.first_milliseconds_timestamp = \
-                int(min(min(self.mixed_parser.clicks, key=lambda x: x[6]),min(self.mixed_parser.keys, key=lambda x: x[6]))[6])
+                int(min(min(self.mixed_parser.clicks, key=lambda x: x[6]), min(
+                    self.mixed_parser.keys, key=lambda x: x[6]))[6])
         return milliseconds - self.first_milliseconds_timestamp
 
     def get_date_from_mixedlog_format(self, click_or_key_log):
@@ -252,20 +257,23 @@ class LogInfo:
         click_or_key_log[6] is the milliseconds that represent the uptime of the machine
         it is possible to combine them into a complete date
         '''
-        from_milliseconds = self.get__milliseconds_delta(int(click_or_key_log[6]))/1000.0
-        from_milliseconds = datetime.datetime.fromtimestamp(from_milliseconds).second
-        datehour = click_or_key_log[0] + ' ' +  click_or_key_log[1] + str(from_milliseconds)
+        from_milliseconds = self.get__milliseconds_delta(
+            int(click_or_key_log[6])) / 1000.0
+        from_milliseconds = datetime.datetime.fromtimestamp(
+            from_milliseconds).second
+        datehour = click_or_key_log[0] + ' ' + \
+            click_or_key_log[1] + str(from_milliseconds)
         date = datetime.datetime.strptime(datehour, "%Y%m%d %H%M%S")
         return date
 
-    def get_clustered_keys(self, cluster_threshold_in_microseconds = 5000000):
+    def get_clustered_keys(self, cluster_threshold_in_microseconds=5000000):
         '''
         Given a reasonable threshold the keys are grouped together in clusters,
         forming sentences which can be visualized easily.
         '''
         data = []
         process_name_by_date = {}
-        for key_info in  self.mixed_parser.keys:
+        for key_info in self.mixed_parser.keys:
 
             key = key_info[7]
 
@@ -273,26 +281,28 @@ class LogInfo:
             date = self.get_date_from_mixedlog_format(key_info)
             name = key_info[2] + "|" + key_info[5]
             process_name_by_date[date] = name
-            data.append((key,date,name, msg))
-        for index,item in enumerate(data):
-            #feed the text reconstructor with data
-            self.textReconstructor.replay_key_function(item[0], item[1], item[3])
-        #get the reconstructed text and turn it into an array of keys
+            data.append((key, date, name, msg))
+        for index, item in enumerate(data):
+            # feed the text reconstructor with data
+            self.textReconstructor.replay_key_function(
+                item[0], item[1], item[3])
+        # get the reconstructed text and turn it into an array of keys
         data = []
         for tup in self.textReconstructor.keys_and_time:
             if tup[1]:
-                data.append((tup[0],tup[1],process_name_by_date[tup[1]]))
-        split_dt = datetime.timedelta(microseconds=cluster_threshold_in_microseconds)
-        dts = (d1[1]-d0[1] for d0, d1 in zip(data, data[1:]))
+                data.append((tup[0], tup[1], process_name_by_date[tup[1]]))
+        split_dt = datetime.timedelta(
+            microseconds=cluster_threshold_in_microseconds)
+        dts = (d1[1] - d0[1] for d0, d1 in zip(data, data[1:]))
         split_at = [i for i, dt in enumerate(dts, 1) if dt >= split_dt]
-        groups = [data[i:j] for i, j in zip([0]+split_at, split_at+[None])]
+        groups = [data[i:j] for i, j in zip([0] + split_at, split_at + [None])]
         sentences = []
         for group in groups:
-            sentence =  ''.join([ seq[0] for seq in group])
+            sentence = ''.join([seq[0] for seq in group])
             start_timestamp = str(group[0][1])
-            end_timestamp = str(group[len(group)-1][1])
+            end_timestamp = str(group[len(group) - 1][1])
             name = group[0][2]
-            sentences.append((sentence,start_timestamp,end_timestamp, name))
+            sentences.append((sentence, start_timestamp, end_timestamp, name))
         self.textReconstructor = TextReconstructor()
         return sentences
 
@@ -341,7 +351,8 @@ class LogInfo:
                 else:
                     # More than one down.
                     key, pt, rt, tt, dx, dy, ux, uy = pk.pop(key)
-                    pk[key] = [key, pt+[ms], None, None, dx+[x], dy+[y], None, None]
+                    pk[key] = [key, pt + [ms], None, None,
+                               dx + [x], dy + [y], None, None]
             else:  # It's an UP msg
                 if key not in pk:
                     msg = "Ha ocurrido un error fatal. "
@@ -350,7 +361,8 @@ class LogInfo:
                     exit(1)
                 else:
                     key, pt, rt, tt, dx, dy, ux, uy = pk.pop(key)
-                    result += [(key, pt, ms, int(ms)-int(pt[0]), dx, dy, x, y)]
+                    result += [(key, pt, ms, int(ms) -
+                                int(pt[0]), dx, dy, x, y)]
         return result
 
     def _get_combos(self):
@@ -474,13 +486,15 @@ class LogInfo:
         """
         time_by_active_window = {}
         time_by_active_window["total"] = 0
-        for i in range(len(self.mixed_parser.keys)-1):
+        for i in range(len(self.mixed_parser.keys) - 1):
             # Get current keystroke.
-            cdate, ctime, cprogram_name, cusername, cwindow_id, cwindow_title, cmiliseconds, ckey, cmsg, cxcoord, cycoord = self.mixed_parser.keys[i]
+            cdate, ctime, cprogram_name, cusername, cwindow_id, cwindow_title, cmiliseconds, ckey, cmsg, cxcoord, cycoord = self.mixed_parser.keys[
+                i]
             # Get next keystroke.
-            ndate, ntime, nprogram_name, nusername, nwindow_id, nwindow_title, nmiliseconds, nkey, nmsg, nxcoord, nycoord = self.mixed_parser.keys[i+1]
+            ndate, ntime, nprogram_name, nusername, nwindow_id, nwindow_title, nmiliseconds, nkey, nmsg, nxcoord, nycoord = self.mixed_parser.keys[
+                i + 1]
 
-            delta = int(nmiliseconds)-int(cmiliseconds)
+            delta = int(nmiliseconds) - int(cmiliseconds)
             if cprogram_name in time_by_active_window:
                 time_by_active_window[cprogram_name] += delta
             else:
@@ -501,10 +515,11 @@ class LogInfo:
 
         # Pick colors
         start_color = Color("#CCE5FF")
-        colors = map(convert_to_hex, list(start_color.range_to(Color("#003366"), len(keys))))
+        colors = map(convert_to_hex, list(
+            start_color.range_to(Color("#003366"), len(keys))))
 
         # Plot pie chart
-        fig, ax = plt.subplots(figsize=(12,8))
+        fig, ax = plt.subplots(figsize=(12, 8))
         ax.pie(values,
                autopct='%1.0f%%',
                pctdistance=1.1,
@@ -513,7 +528,7 @@ class LogInfo:
                startangle=10,
                colors=colors)
         ax.set_title("Pie chart: Time spent by window")
-        plt.legend(keys, loc="best",shadow=True)
+        plt.legend(keys, loc="best", shadow=True)
         plt.show()
 
     # def get_pauses_by_phase(self, phase):
@@ -552,7 +567,8 @@ class LogInfo:
         current_keystrokes, i = 0, 0
         start = int(self.keys_parser.keys[0][6])  # ms
         while i < len(self.keys_parser.keys):
-            d, t, pn, user, wid, title, ms, key_id, msg, x, y = self.keys_parser.keys[i]
+            d, t, pn, user, wid, title, ms, key_id, msg, x, y = self.keys_parser.keys[
+                i]
             ms = int(ms) - start  # force to start from ms 0
             if current_bin_size + ms <= last_bin_size:
                 if "down" in msg:
@@ -567,7 +583,7 @@ class LogInfo:
                 keystrokes[current_bin] = current_keystrokes
                 current_bin += 1
             i += 1
-        fig, ax = plt.subplots(figsize=(12,8))
+        fig, ax = plt.subplots(figsize=(12, 8))
         ax.plot(keystrokes.keys(), keystrokes.values(), 'r', color='#4682b4')
         ax.plot(keystrokes.keys(), keystrokes.values(), 'o', color='#19457e')
         ax.set_xlabel('# Bins of %s milliseconds' % str(bin_size * 1000))
@@ -587,7 +603,8 @@ class LogInfo:
         current_clicks, i = 0, 0
         start = int(self.clicks_parser.clicks[0][6])  # ms
         while i < len(self.clicks_parser.clicks):
-            date, time, pn, user, wid, title, ms, msg, x, y, res, img = self.clicks_parser.clicks[i]
+            date, time, pn, user, wid, title, ms, msg, x, y, res, img = self.clicks_parser.clicks[
+                i]
             ms = int(ms) - start  # force to start from ms 0
             if current_bin_size + ms <= last_bin_size:
                 if "down" in msg:
@@ -602,7 +619,7 @@ class LogInfo:
                 clicks[current_bin] = current_clicks
                 current_bin += 1
             i += 1
-        fig, ax = plt.subplots(figsize=(12,8))
+        fig, ax = plt.subplots(figsize=(12, 8))
         ax.plot(clicks.keys(), clicks.values(), 'r', color='#4682b4')
         ax.plot(clicks.keys(), clicks.values(), 'o', color='#19457e')
         ax.set_xlabel('# Bins of %s milliseconds' % str(bin_size * 1000))
@@ -616,21 +633,21 @@ class LogInfo:
         """
         if x - 1 >= 0:
             if y - 1 >= 0:
-                self.pixels[x-1, y-1] = (r, b, g)
-            self.pixels[x-1, y] = (r, b, g)
+                self.pixels[x - 1, y - 1] = (r, b, g)
+            self.pixels[x - 1, y] = (r, b, g)
             if y + 1 < self.img_height:
-                self.pixels[x-1, y+1] = (r, b, g)
+                self.pixels[x - 1, y + 1] = (r, b, g)
         if y - 1 >= 0:
-            self.pixels[x, y-1] = (r, b, g)
+            self.pixels[x, y - 1] = (r, b, g)
         self.pixels[x, y] = (r, b, g)
         if y + 1 < self.img_height:
-            self.pixels[x, y+1] = (r, b, g)
+            self.pixels[x, y + 1] = (r, b, g)
         if x + 1 < self.img_width:
             if y - 1 >= 0:
-                self.pixels[x+1, y-1] = (r, b, g)
-            self.pixels[x+1, y] = (r, b, g)
+                self.pixels[x + 1, y - 1] = (r, b, g)
+            self.pixels[x + 1, y] = (r, b, g)
             if y + 1 < self.img_height:
-                self.pixels[x+1, y+1] = (r, b, g)
+                self.pixels[x + 1, y + 1] = (r, b, g)
 
     def plot_clicks_in_screenshot(self, screenshot):
         """
@@ -648,6 +665,6 @@ class LogInfo:
         r, g, b = 40, 205, 106
         # For each click, mark the surrounding area
         for click in clicks:
-            _ , _, _, _, _, _, x, y = click
+            _, _, _, _, _, _, x, y = click
             self.mark_click(int(x), int(y), r, g, b)
         img.show()

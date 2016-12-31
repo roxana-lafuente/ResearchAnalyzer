@@ -39,6 +39,7 @@ class KeyParser:
     """
         Class for parsing the key data from a session.
     """
+
     def __init__(self, keys_filename, search_pattern=''):
         """
         - keys_filename is the path of the logfile.
@@ -57,7 +58,8 @@ class KeyParser:
         line = f.readline()
         while line != '' and line != '\n':
             # Get attributes from the log line.
-            date, time, program_name, window_id, username, window_title, logged_keys = line.split(ATTRIBUTE_SEPARATOR)
+            date, time, program_name, window_id, username, window_title, logged_keys = line.split(
+                ATTRIBUTE_SEPARATOR)
             # Check whether the title is in the window.
             if title in window_title:
                 logged_keys = logged_keys.split(LINE_SEPARATOR)
