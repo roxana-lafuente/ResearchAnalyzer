@@ -13,7 +13,7 @@ def normalizeXandZ(necessary_sentences_information):
     ZCoordinates = []
     for index,x in enumerate(necessary_sentences_information):
         XCoordinates.append(int(necessary_sentences_information[index]["X"]))
-        ZCoordinates.append(int(necessary_sentences_information[index]["Y"]))
+        ZCoordinates.append(int(necessary_sentences_information[index]["Z"]))
     Xnorm = [float(i)/sum(XCoordinates) for i in XCoordinates]
     from math import log
     def f(X):
@@ -81,6 +81,9 @@ def save_UE4_data(clustering_option = 5400000):
     wrapper["number_of_groups"] = str(len(group_names))
 
     with open("UE4Ready.json", 'w') as outfile:
+        json.dump(wrapper, outfile)
+
+    with open("events.json", 'w') as outfile:
         json.dump(wrapper, outfile)
 
     with open("HumanReadableJSON.json", 'w') as outfile:
