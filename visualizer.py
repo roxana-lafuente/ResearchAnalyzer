@@ -24,7 +24,7 @@ class Visualizer():
         self.clustering_options = [((x * 5) ** 3) * 200 for x in range(1, 11)]
         self.standard_cluster = self.clustering_options[
             int(len(self.clustering_options) / 2)]
-        self.path = os.getcwd() + "/example_log/"
+        self.path = str(os.getcwd()).replace('\\','/') + "/example_log/"
         # Data from one subject.
         # LogInfo needs: - Detailed log file path.
         #                - Click images file path.
@@ -130,7 +130,7 @@ class Visualizer():
             "group"] = self.group_names.index(process_name)
         neccesary_click_information["type"] = "box"
         neccesary_click_information[
-            "click_image"] = self.path + "click_images/" + click_info[2]
+            "click_image"] = "file:///" + self.path + "click_images/" + click_info[2]
         return neccesary_click_information
 
 
