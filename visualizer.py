@@ -4,8 +4,6 @@ from mixed_parser import *
 import os
 import json
 import datetime
-import webbrowser
-from text_reconstruction import TextReconstructor
 
 
 class Visualizer():
