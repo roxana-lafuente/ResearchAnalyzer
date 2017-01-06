@@ -15,6 +15,7 @@ def normalizeXandZ(necessary_sentences_information):
         XCoordinates.append(int(necessary_sentences_information[index]["X"]))
         ZCoordinates.append(int(necessary_sentences_information[index]["Z"]))
     Xnorm = [float(i)/sum(XCoordinates) for i in XCoordinates]
+    minXNorm = Xnorm[0]
     from math import log
     def f(X):
         return (2**(X*0.1)-1)*(log((X*(-1)+1),0.8))
@@ -24,7 +25,7 @@ def normalizeXandZ(necessary_sentences_information):
         necessary_sentences_information[index]["X"] = str(Xnorm[index])
         necessary_sentences_information[index]["Y"] = coordinate[1]
         necessary_sentences_information[index]["Z"] = str(1-ZNorm[index])
-    return necessary_sentences_information
+    return str(minXNorm), necessary_sentences_information
 
 
 
@@ -76,14 +77,11 @@ def save_UE4_data(clustering_option = 5400000):
         necessary_sentences_information.append(necessary_sentence_information)
 
     wrapper = {}
-    wrapper["data"] = normalizeXandZ(necessary_sentences_information)
+    wrapper["minXNorm"],wrapper["data"] = normalizeXandZ(necessary_sentences_information)
     wrapper["maxY"] = str(len(group_names) - 1)
     wrapper["number_of_groups"] = str(len(group_names))
 
     with open("UE4Ready.json", 'w') as outfile:
-        json.dump(wrapper, outfile)
-
-    with open("events.json", 'w') as outfile:
         json.dump(wrapper, outfile)
 
     with open("HumanReadableJSON.json", 'w') as outfile:
