@@ -5,27 +5,48 @@ import os
 import json
 import datetime
 from dateutil import parser
+import numpy as np
 
-
+def reject_outliers(data, m = 5.):
+    '''
+    WHY FILTER THE OUTLIERS
+    The outliers generate problems during normalization, most of the elements
+    receive a number close to zero while the outliers receive a number close to 1.
+    Normalization means giving the elements a percentaje divided by 100, thus the 0 to 1 scale.
+    This percentaje is the time at which they are in the timeline, the X dimension.
+    Because most of the element receive a number close to zero, they lack precision,
+    0.0000000010134012 gets truncated by floating point presicion.
+    By removing the outliers, the elements receive bigger percentajes.
+    0.1013401223456789<--- winning 8 valuable bits of numerical presicion.
+    '''
+    d = np.abs(data - np.median(data))
+    mdev = np.median(d)
+    s = d/mdev if mdev else 0.
+    return data[s<m]
 
 def normalizeXandZ(necessary_sentences_information):
     XCoordinates = []
+    YCoordinates = []
     ZCoordinates = []
     for index,x in enumerate(necessary_sentences_information):
         XCoordinates.append(int(necessary_sentences_information[index]["X"]))
+        YCoordinates.append(int(necessary_sentences_information[index]["Y"]))
         ZCoordinates.append(int(necessary_sentences_information[index]["Z"]))
-    Xnorm = [float(i)/sum(XCoordinates) for i in XCoordinates]
+    FilteredXCoordinates = reject_outliers(np.array(XCoordinates))
+    #print str(len(XCoordinates) - len(FilteredXCoordinates)) + " outliers filtered"
+    Xnorm = [float(i)/sum(FilteredXCoordinates) for i in FilteredXCoordinates]
     minXNorm = Xnorm[0]
+    maxXNorm = Xnorm[-1]
     from math import log
     def f(X):
         return (2**(X*0.1)-1)*(log((X*(-1)+1),0.8))
     ZNorm = [f(float(i)/sum(ZCoordinates)) for i in ZCoordinates]
     parsed_coordinates = [coord["coordinates"].split() for coord in necessary_sentences_information]
-    for index,coordinate in enumerate(parsed_coordinates):
+    for index,coordinate in enumerate(FilteredXCoordinates):
         necessary_sentences_information[index]["X"] = str(Xnorm[index])
-        necessary_sentences_information[index]["Y"] = coordinate[1]
+        necessary_sentences_information[index]["Y"] = str(YCoordinates[index])
         necessary_sentences_information[index]["Z"] = str(1-ZNorm[index])
-    return str(minXNorm), necessary_sentences_information
+    return str(minXNorm),str(maxXNorm), necessary_sentences_information
 
 
 
@@ -77,14 +98,14 @@ def save_UE4_data(clustering_option = 5400000):
         necessary_sentences_information.append(necessary_sentence_information)
 
     wrapper = {}
-    wrapper["minXNorm"],wrapper["data"] = normalizeXandZ(necessary_sentences_information)
+    wrapper["minXNorm"],wrapper["maxXNorm"],wrapper["data"] = normalizeXandZ(necessary_sentences_information)
     wrapper["maxY"] = str(len(group_names) - 1)
     wrapper["number_of_groups"] = str(len(group_names))
 
-    with open("UE4Ready.json", 'w') as outfile:
+    with open("../data/UE4Ready.json", 'w') as outfile:
         json.dump(wrapper, outfile)
 
-    with open("HumanReadableJSON.json", 'w') as outfile:
+    with open("../data/HumanReadableJSON.json", 'w') as outfile:
         json.dump(necessary_sentences_information, outfile)
 
 if __name__ == "__main__":

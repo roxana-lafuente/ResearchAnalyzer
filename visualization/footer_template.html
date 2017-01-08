@@ -6,6 +6,7 @@
 	<script>
 
    var currentValue = "vis_index5";
+	 var currentValueNumerical = 5;
 	 var txtData = document.getElementById(currentValue);
 
 	 // Create an empty DataSet.
@@ -13,20 +14,10 @@
 	 var items = new vis.DataSet();
 	 // create a timeline
 	 var container = document.getElementById('visualization');
-	 var options = {
-	   start: '2016-11-08',
-  	   end: '2016-11-09',
-	   editable: false
-	 };
+	 <!--options start here. Do not delete this comment.-->
 	 <!--group names start here. Do not delete this comment.-->
-	 var groups = new vis.DataSet();
-	 var groupCount = names.length;
-	 for (var g = 0; g < groupCount; g++) {
-	   groups.add({id: g, content: names[g]});
-	 }
 
 	 var timeline = new vis.Timeline(container, items, options);
-	 timeline.setGroups(groups);
 
 	 var click_screenshoot = new Image();
 	 var div2 = document.getElementById('images');
@@ -63,6 +54,14 @@
 	   //   items.update(data);
 	   //
 	   // Existing items will then be updated, and new items will be added.
+
+		 var groups = new vis.DataSet();
+		 var groupCount = names[currentValueNumerical].length;
+		 for (var g = 0; g < groupCount; g++) {
+		   groups.add({id: g, content: names[currentValueNumerical][g]});
+		 }
+
+		 timeline.setGroups(groups);
 	   items.clear();
 	   items.add(data);
 
@@ -130,6 +129,7 @@
      if (newValue != currentValue){
       txtData = document.getElementById(newValue);
       currentValue = newValue;
+			currentValueNumerical = newVal;
       loadData();
     }
   }

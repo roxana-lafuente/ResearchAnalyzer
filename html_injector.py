@@ -2,6 +2,7 @@
 class HTML_Injector:
 
     def __init__(self):
+        self.options = ""
         self.group_names = []
         self.visualizations = [dict() for x in range(10)]
 
@@ -17,15 +18,18 @@ class HTML_Injector:
         pre = "var names = ["
         post = "];"
         middle = ""
-        for group_name in group_names:
-            middle += "'" + group_name + "'" + ","
+
+        for clustering_index, group_name_list in enumerate(group_names):
+            group_names_per_clustering_index = ""
+            for group_name in group_name_list:
+                group_names_per_clustering_index += "'" + group_name + "'" + ","
+            group_names_per_clustering_index = "["+group_names_per_clustering_index[:-1]+"]"
+            middle += group_names_per_clustering_index + ","
         return pre + middle[:-1] + post
 
-    def prepareForHTML(self, json, group_names, filename, vis_index):
-        for group_name in group_names:
-            if group_name not in self.group_names:
-                self.group_names.append(group_name)
-        # print vis_index
+    def prepareForHTML(self, json, group_names, options, filename, vis_index):
+        self.group_names = group_names
+        self.options = options
         self.visualizations[vis_index][filename] = json
 
     def append_groups_to_content(self, contentHTML):
@@ -43,6 +47,8 @@ class HTML_Injector:
         # inject group names
         with open("visualization/footer_template.html", 'r') as f:
             footer = f.read()
+
+        footer = self.add_at("<!--options start here. ",self.options, footer)
         footer = self.add_at("<!--group names start here. ",
                              self.prepare_group_names(self.group_names), footer)
 
